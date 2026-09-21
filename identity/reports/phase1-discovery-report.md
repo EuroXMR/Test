@@ -183,7 +183,8 @@ usual here.
 | cyprusregistry.com/officials/SANTIAGO_PUIG_ASENSIO | Cyprus Registry | Santiago Puig Asensio | A — confirmed his (director of a Cyprus company, name TBD) | Medium | Get company name from Santiago; open directly to confirm details once egress allows |
 | linkedin.com/in/santiago-puig-bb0282244 (Barcelona) | LinkedIn | Santiago Puig | A — confirmed his (states he works at Lynas Rare Earths) | High | Decide on renaming to full "Santiago Puig Asensio" for consistency |
 | polarvector.uk | Own site | (no name found in index) | A — confirmed his, via PolarVector Limited (UK, sole shareholder/director) | High | Site itself still doesn't name him publicly — confirm whether/how to add that |
-| mepa.ngo | Own site | (no name found in index) | A — confirmed his; status "not currently working atm" — needs clarification | Medium | Clarify dormant-org vs. paused-involvement vs. site-down before any public statement |
+| x.com/polarvectorUK | X (Twitter) | PolarVector | A — confirmed by Santiago | High | Link from personal hub/PolarVector site once built; verify live content when audit tooling allows |
+| mepa.ngo | Own site | (no name found in index) | A — confirmed his; site under maintenance | High | Deprioritized — revisit when site is back up |
 | instagram.com/santipuigrdz_ | Instagram | Santiago Puig | D — different person | High confidence it's not him | None |
 | instagram.com/santipuig (Santi Puig Muns) | Instagram | Santi Puig Muns | D — different person | High | None |
 | racingsportscars.com (Santiago Puig E) | Motorsport site | Santiago Puig | D — different person | High | None |
@@ -240,41 +241,39 @@ links, or mobile usability could be checked this session — see Section 0.
 |---|---|---|
 | 1 | SK1.au | Entirely his; he is the founder; it's his design agency. He has direct CMS/host access. |
 | 2 | PolarVector.uk | His; operated through **PolarVector Limited**, a UK company where he is **sole shareholder and director**. |
-| 3 | PolarVector — X/Twitter | Asked about; **not found by search this session** (only unrelated "Polar"-named accounts turned up — see below). Not confirmed either way — need the exact handle/URL from him if one exists. |
-| 4 | MEPA | His, but **"not currently working atm."** Ambiguous as given — needs clarification (see open question below): is the org itself dormant/inactive, is his involvement paused, or is just the website down? Do not publish anything about current MEPA activity until this is resolved. |
+| 3 | PolarVector — X/Twitter | Confirmed: **@polarvectorUK**. |
+| 4 | MEPA | His; confirmed the site is **just under maintenance** — not dormant, no other clarification needed. Deprioritized for now per Santiago ("ignore it for now"); revisit when the site is back up. |
 | 5 | UK Companies House record | Confirmed his. (Which company/companies it lists — presumably PolarVector Limited at minimum — still not directly verified since this session's fetch tool is blocked; treat as A for identity, unconfirmed for exact company list.) |
 | 6 | Cyprus Registry record | Confirmed his; he is director of a Cyprus business. (Name of that business not yet stated — separate from SK1/PolarVector/MEPA unless he says otherwise.) |
 | 7 | LinkedIn `linkedin.com/in/santiago-puig-bb0282244` (Barcelona) | Confirmed his ("Santiago Puig," not "Santiago Puig Asensio" — a name-consistency gap worth deciding on). He states it lists him as working at **Lynas Rare Earths**. A follow-up search this session did not surface a Lynas connection on any indexed "Santiago Puig" LinkedIn profile — likely just not indexed/visible to search; not a contradiction, just unverified externally. Lynas Rare Earths is a genuine ASX-listed rare-earths miner with Australian operations, consistent with the brief's "mining" context. |
 | 8 | Education (Madrid design study, Sogang University / Korea) | Confirmed correct as described in the brief. |
 
-**Follow-up search on item 3 (PolarVector X account):** no PolarVector-branded X/Twitter account appeared in search results — only unrelated accounts (a Polar fitness-watch brand, "PolarX Limited," etc.). If PolarVector does have an account, it's either very new/low-visibility or under a handle that doesn't literally contain "PolarVector" — send me the exact handle/URL and I'll fold it into the entity map directly rather than relying on search.
+**Note on item 3:** the handle @polarvectorUK didn't surface in this session's earlier search pass (low-visibility/new account, or just not indexed the way I searched for it) — now recorded directly from Santiago rather than search.
 
 ## 6. Open questions (remaining, after 2026-09-21 confirmation round)
 
 Most of Section 6's original questions are now answered — see Section 5.
-What's still open:
+MEPA and the PolarVector X handle are resolved. What's still open:
 
-1. **MEPA status** — "not currently working atm" needs one more level of
-   clarity before anything is published: is the NGO itself dormant, is his
-   involvement paused while the org continues, or is only the website
-   down? These lead to different public statements (or none at all).
-2. **PolarVector X/Twitter** — exact handle/URL, if one exists (search
-   didn't surface it).
-3. **Companies House — exact company list** — confirmed the record is his;
+1. **Companies House — exact company list** — confirmed the record is his;
    still don't have the actual company name(s)/role/dates it lists (only
    that PolarVector Limited is presumably one of them). Does he want this
    pulled and stated on his own properties, or left as background-only
    (it's already public via Companies House, but repeating it on his own
    site is a separate choice)?
-4. **Cyprus company name** — he's confirmed he's a director of a Cyprus
+2. **Cyprus company name** — he's confirmed he's a director of a Cyprus
    business; what's it called, and should it be part of the public entity
    map at all, or stays background?
-5. **Name consistency** — the confirmed LinkedIn profile is under "Santiago
+3. **Name consistency** — the confirmed LinkedIn profile is under "Santiago
    Puig," not the full "Santiago Puig Asensio." Keep it as-is, or rename it
    for consistency with the canonical identity?
-6. **Technical SEO / WHOIS access** — does he want this re-run from an
-   environment with broader network access, or would he rather send page
-   exports / CMS access / a WHOIS result directly?
+4. **Technical SEO / WHOIS access** — this session's page-fetch tool is
+   still blocked (confirmed again on 2026-09-21, including a retest after
+   Santiago enabled a VPN on his own end — that has no effect on this
+   session's sandbox, whose network policy is set at the environment level,
+   not the client's). Real options: reconfigure this Claude Code
+   environment's network egress policy, or Santiago sends page
+   exports/CMS access/a WHOIS result directly.
 
 ---
 
