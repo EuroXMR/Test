@@ -4,7 +4,7 @@
     <path id="bottom" d="M500,85 A415,415 0 1,0 500,915 A415,415 0 1,0 500,85"/>
     <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="7" result="warp"/>
-      <feDisplacementMap in="SourceGraphic" in2="warp" scale="5" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+      <feDisplacementMap in="SourceGraphic" in2="warp" scale="3.5" xChannelSelector="R" yChannelSelector="G" result="rough"/>
       <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3" result="grain"/>
       <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.6 0 0 0 2.05" result="grainMask"/>
       <feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" seed="21" result="press"/>
@@ -23,10 +23,9 @@
     <text font-size="62" letter-spacing="12" text-anchor="middle" stroke="none"><textPath href="#top" startOffset="50%">SAINT &amp; SAINT STUDIO</textPath></text>
     <text font-size="44" letter-spacing="7" text-anchor="middle" stroke="none"><textPath href="#bottom" startOffset="50%">PROPERTY DEVELOPMENT · CYPRUS</textPath></text>
     <g stroke="none"><path d="M105,484 L114.6,500 L105,516 L95.4,500 Z"/><path d="M895,484 L904.6,500 L895,516 L885.4,500 Z"/></g>
-    <g stroke="none"><path d="M440,352 L444.8,360 L440,368 L435.2,360 Z"/><path d="M500,339 L507.8,352 L500,365 L492.2,352 Z"/><path d="M560,352 L564.8,360 L560,368 L555.2,360 Z"/></g>
-    <text x="500" y="548" font-size="196" font-style="italic" text-anchor="middle" stroke="none">S&amp;S</text>
-    <line x1="318" y1="590" x2="682" y2="590" stroke-width="3"/>
-    <text x="500" y="652" font-size="28" letter-spacing="8" text-anchor="middle" stroke="none">LUXURY RESIDENCES</text>
-    <g stroke="none"><path d="M500,688 L506.0,698 L500,708 L494.0,698 Z"/></g>
+    <g transform="translate(369.0 318) scale(1.2875)"><g transform="translate(0 0)" fill="none" stroke-width="18" stroke-linejoin="miter"><path d="M9,100 V9 H51 A14,14 0 0 1 65,23 V69"/><path d="M9,100 V9 H51 A14,14 0 0 1 65,23 V69" transform="rotate(180 50 50)"/></g><g transform="translate(103.5 0)"><rect x="2.5" y="2.5" width="95" height="95" fill="none" stroke-width="5"/><circle cx="50" cy="50" r="31" stroke="none"/></g><g transform="translate(0 103.5)"><rect x="2.5" y="2.5" width="95" height="95" fill="none" stroke-width="5"/><circle cx="50" cy="50" r="31" stroke="none"/></g><g transform="translate(103.5 103.5)" fill="none" stroke-width="18" stroke-linejoin="miter"><path d="M9,100 V9 H51 A14,14 0 0 1 65,23 V69"/><path d="M9,100 V9 H51 A14,14 0 0 1 65,23 V69" transform="rotate(180 50 50)"/></g></g>
+    <line x1="318" y1="612" x2="682" y2="612" stroke-width="3"/>
+    <text x="500" y="668" font-size="28" letter-spacing="8" text-anchor="middle" stroke="none">LUXURY RESIDENCES</text>
+    <g stroke="none"><path d="M500,702 L506.0,712 L500,722 L494.0,712 Z"/></g>
   </g>
 </svg>
