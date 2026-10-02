@@ -1,6 +1,6 @@
 # Quote requests: Holden Viva rear-left damage
 
-Created 02/10/2026. **13 Gmail drafts** are ready in spuigp@gmail.com, under Drafts, subject *"Rough quote please - Holden Viva sedan, rear left damage (photos attached)"*. Nothing has been sent.
+Created 02/10/2026 and updated the same day: the car is a 2006 model, and the tail light still works. **13 Gmail drafts** are ready in spuigp@gmail.com, under Drafts, subject *"Rough quote please - 2006 Holden Viva sedan, rear left damage (photos attached)"*. Nothing has been sent.
 
 **Before you send each draft:**
 1. Attach IMG_0826–0829.
@@ -32,7 +32,7 @@ Every email asks for a **non-binding ballpark**, the cheapest sound repair metho
 ## No email found: text them or use their web form
 
 **Text message (paste and add the photos):**
-> Hi, could I get a rough non-binding price from photos for a private repair on a red Holden Viva sedan in East Fremantle? Damage: LH tail light smashed, dent/crease with paint damage on LH rear quarter next to the light, long scrape on lower LH rear door, maybe a small scratch on the rear wheel arch. Please exclude the blue boot lid and the old bumper scuffs. Ballpark is fine, cheapest sound fix preferred. Thanks, Santiago
+> Hi, could I get a rough non-binding price from photos for a private repair on a red 2006 Holden Viva sedan in East Fremantle? Damage: LH tail light lens smashed (light still works), dent/crease with paint damage on LH rear quarter next to the light, long scrape on lower LH rear door, maybe a small scratch on the rear wheel arch. Please exclude the blue boot lid and the old bumper scuffs. Ballpark is fine, cheapest sound fix preferred. Thanks, Santiago
 
 | Business | How to reach |
 |---|---|

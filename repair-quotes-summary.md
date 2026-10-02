@@ -26,7 +26,7 @@ Prepared 01/10/2026. The car is in East Fremantle. All prices are in AUD.
 
 ## 1. Market value
 
-**Assumptions:** 2007 JF sedan, automatic, 180,000–220,000 km, sound mechanically. I deducted for the visible pre-existing defects: the blue (mismatched) boot lid and the scuffed rear bumper.
+**Assumptions:** 2006 JF sedan (year confirmed 02/10/2026), automatic, 180,000–220,000 km, sound mechanically. The carsales guide for a 2006 sedan is $3,000–$3,500, close to the 2007 figures, so the estimate below doesn't change. I deducted for the visible pre-existing defects: the blue (mismatched) boot lid and the scuffed rear bumper.
 
 | Source | Vehicle | Price | Type |
 |---|---|---|---|
