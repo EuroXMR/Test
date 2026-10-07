@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Seamless Device Access for HSBC Expat</title>
+<style>
+  @font-face { font-family: "Cormorant"; src: url("fonts/CormorantGaramond-400.woff") format("woff"); font-weight: 400; font-style: normal; }
+  @font-face { font-family: "Cormorant"; src: url("fonts/CormorantGaramond-500.woff") format("woff"); font-weight: 500; font-style: normal; }
+  @font-face { font-family: "Cormorant"; src: url("fonts/CormorantGaramond-400-italic.woff") format("woff"); font-weight: 400; font-style: italic; }
+  @font-face { font-family: "Cormorant"; src: url("fonts/CormorantGaramond-500-italic.woff") format("woff"); font-weight: 500; font-style: italic; }
+  @font-face { font-family: "InterDoc"; src: url("fonts/Inter-400.woff") format("woff"); font-weight: 400; font-style: normal; }
+  @font-face { font-family: "InterDoc"; src: url("fonts/Inter-500.woff") format("woff"); font-weight: 500; font-style: normal; }
+  @font-face { font-family: "InterDoc"; src: url("fonts/Inter-600.woff") format("woff"); font-weight: 600; font-style: normal; }
+
+  :root {
+    --ink: #0d1a25;
+    --navy: #122435;
+    --paper: #fbf9f5;
+    --ivory: #f3eee4;
+    --gold: #a9874f;
+    --gold-soft: #cbb387;
+    --text: #222c36;
+    --body: #3d4752;
+    --muted: #7a828b;
+    --hair: #e2dbcd;
+  }
+
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); }
+  body {
+    font-family: "InterDoc", sans-serif;
+    font-size: 8.9pt;
+    line-height: 1.62;
+    color: var(--body);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    background: var(--paper);
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .serif { font-family: "Cormorant", serif; }
+  .label {
+    font-family: "InterDoc", sans-serif;
+    font-size: 6.6pt;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ---------- Cover ---------- */
+  .cover {
+    background: radial-gradient(120% 80% at 85% 0%, #1a3148 0%, var(--navy) 45%, var(--ink) 100%);
+    color: var(--ivory);
+  }
+  .cover .frame {
+    position: absolute;
+    inset: 11mm;
+    border: 0.35pt solid rgba(203, 179, 135, 0.45);
+  }
+  .cover .top {
+    position: absolute;
+    top: 24mm; left: 26mm; right: 26mm;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cover .top .label { color: var(--gold-soft); }
+  .cover .monogram {
+    width: 13mm; height: 13mm;
+    border: 0.5pt solid var(--gold-soft);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Cormorant", serif;
+    font-size: 11pt;
+    letter-spacing: 0.06em;
+    color: var(--gold-soft);
+  }
+  .cover .title-block {
+    position: absolute;
+    left: 26mm; right: 26mm; top: 96mm;
+  }
+  .cover .kicker { color: var(--gold-soft); margin-bottom: 9mm; }
+  .cover h1 {
+    font-family: "Cormorant", serif;
+    font-weight: 400;
+    font-size: 49pt;
+    line-height: 1.02;
+    letter-spacing: -0.005em;
+    color: #f7f2e8;
+  }
+  .cover h1 em { font-style: italic; color: var(--gold-soft); }
+  .cover .rule {
+    width: 34mm; height: 0.6pt; background: var(--gold);
+    margin: 11mm 0 8mm;
+  }
+  .cover .sub {
+    font-family: "Cormorant", serif;
+    font-style: italic;
+    font-size: 17pt;
+    line-height: 1.35;
+    color: rgba(243, 238, 228, 0.82);
+    max-width: 150mm;
+  }
+  .cover .meta {
+    position: absolute;
+    left: 26mm; right: 26mm; bottom: 30mm;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;
+    padding-top: 7mm;
+    border-top: 0.35pt solid rgba(203, 179, 135, 0.35);
+  }
+  .cover .meta .label { color: var(--gold-soft); margin-bottom: 2.4mm; }
+  .cover .meta .name {
+    font-family: "Cormorant", serif;
+    font-size: 15pt;
+    color: #f7f2e8;
+    line-height: 1.2;
+  }
+  .cover .meta .role {
+    font-size: 7.8pt;
+    color: rgba(243, 238, 228, 0.62);
+    margin-top: 1mm;
+    letter-spacing: 0.01em;
+  }
+
+  /* ---------- Interior ---------- */
+  .inner { padding: 18mm 22mm 0; }
+  .runner {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 3.2mm;
+    border-bottom: 0.35pt solid var(--hair);
+    margin-bottom: 9.5mm;
+  }
+  .runner .label { color: var(--muted); letter-spacing: 0.22em; }
+  .runner .folio {
+    font-family: "Cormorant", serif;
+    font-size: 11pt;
+    color: var(--gold);
+  }
+
+  .section { margin-bottom: 8.2mm; }
+  .section-head {
+    display: flex; align-items: baseline; gap: 4mm;
+    margin-bottom: 4.2mm;
+  }
+  .section-head .num {
+    font-family: "Cormorant", serif;
+    font-size: 12pt;
+    color: var(--gold);
+    min-width: 7mm;
+  }
+  .section-head h2 {
+    font-family: "InterDoc", sans-serif;
+    font-size: 6.8pt;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .section-head .line { flex: 1; height: 0.35pt; background: var(--hair); transform: translateY(-1.4mm); }
+
+  .lead {
+    font-family: "Cormorant", serif;
+    font-size: 16.4pt;
+    line-height: 1.34;
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .lead em { font-style: italic; color: var(--gold); }
+
+  /* Journey (current) */
+  .journey {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: relative;
+    margin-top: 2mm;
+  }
+  .journey::before {
+    content: ""; position: absolute;
+    top: 3.1mm; left: 3mm; right: calc(25% - 3mm);
+    height: 0.35pt; background: var(--gold-soft);
+  }
+  .step { position: relative; padding-right: 8mm; }
+  .step .dot {
+    width: 6.2mm; height: 6.2mm; border-radius: 50%;
+    border: 0.5pt solid var(--gold);
+    background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Cormorant", serif; font-size: 9.5pt; color: var(--gold);
+    position: relative; z-index: 1;
+    margin-bottom: 3.6mm;
+  }
+  .step.end .dot { background: var(--ink); border-color: var(--ink); color: var(--gold-soft); }
+  .step h3 {
+    font-size: 8.4pt; font-weight: 600; color: var(--text);
+    margin-bottom: 1.2mm; letter-spacing: 0.005em;
+  }
+  .step p { font-size: 8pt; line-height: 1.52; color: var(--body); }
+
+  .stat {
+    display: grid; grid-template-columns: 36mm 1fr; gap: 6mm; align-items: center;
+    margin-top: 6.5mm;
+    padding: 4mm 0 4mm;
+    border-top: 0.35pt solid var(--hair);
+    border-bottom: 0.35pt solid var(--hair);
+  }
+  .stat .figure {
+    font-family: "Cormorant", serif;
+    font-size: 52pt; line-height: 1; color: var(--ink);
+    font-weight: 400;
+    padding-left: 2mm;
+    font-variant-numeric: lining-nums;
+  }
+  .stat .figure span { color: var(--gold); }
+  .stat .caption {
+    font-family: "Cormorant", serif; font-style: italic;
+    font-size: 14pt; line-height: 1.3; color: var(--ink);
+    border-left: 0.6pt solid var(--gold); padding-left: 6mm;
+  }
+
+  .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; }
+  .pillar { border-top: 0.6pt solid var(--gold); padding-top: 4mm; }
+  .pillar h3 {
+    font-family: "Cormorant", serif;
+    font-size: 14.5pt; font-weight: 500; color: var(--ink);
+    margin-bottom: 1.8mm; line-height: 1.15;
+  }
+  .pillar p { font-size: 8pt; line-height: 1.55; }
+
+  /* Proposal */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 0.35pt solid var(--hair); border-left: 0.35pt solid var(--hair); }
+  .card {
+    padding: 6.6mm 6mm 7mm;
+    border-right: 0.35pt solid var(--hair);
+    border-bottom: 0.35pt solid var(--hair);
+    background: #fffdf9;
+    display: grid; grid-template-columns: 11mm 1fr; gap: 2mm;
+  }
+  .card .n {
+    font-family: "Cormorant", serif;
+    font-size: 25pt; line-height: 0.9; color: var(--gold);
+  }
+  .card h3 {
+    font-size: 8.6pt; font-weight: 600; color: var(--text);
+    letter-spacing: 0.01em; margin-bottom: 1.2mm;
+  }
+  .card p { font-size: 7.95pt; line-height: 1.5; }
+
+  .extras { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; margin-top: 5.5mm; }
+  .extra { display: flex; gap: 3mm; align-items: baseline; font-size: 7.9pt; }
+  .extra .mark { color: var(--gold); font-family: "Cormorant", serif; font-size: 12pt; line-height: 1; }
+  .extra b { color: var(--text); font-weight: 600; }
+
+  .proof {
+    background: var(--ivory);
+    border-left: 0.8pt solid var(--gold);
+    padding: 5mm 7mm;
+    display: grid; grid-template-columns: 30mm 1fr; gap: 6mm; align-items: center;
+  }
+  .proof .label { line-height: 1.6; }
+  .proof p {
+    font-family: "Cormorant", serif;
+    font-size: 13pt; line-height: 1.34; color: var(--ink);
+  }
+  .proof p em { color: var(--gold); }
+
+  .outcomes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; }
+  .outcome .big {
+    font-family: "Cormorant", serif;
+    font-size: 19pt; line-height: 1.05; color: var(--ink);
+    margin-bottom: 1.6mm;
+  }
+  .outcome .big em { color: var(--gold); }
+  .outcome p { font-size: 7.9pt; line-height: 1.5; }
+
+  .request {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(100deg, var(--ink) 0%, var(--navy) 100%);
+    color: var(--ivory);
+    padding: 11mm 22mm 12mm;
+    display: grid; grid-template-columns: 1fr 52mm; gap: 12mm; align-items: end;
+  }
+  .request .label { color: var(--gold-soft); margin-bottom: 3mm; }
+  .request .ask {
+    font-family: "Cormorant", serif;
+    font-size: 15.5pt; line-height: 1.32; color: #f7f2e8;
+  }
+  .request .ask em { color: var(--gold-soft); }
+  .request .sig { border-left: 0.35pt solid rgba(203, 179, 135, 0.45); padding-left: 6mm; }
+  .request .sig .name { font-family: "Cormorant", serif; font-size: 14pt; color: #f7f2e8; line-height: 1.2; }
+  .request .sig .role { font-size: 7.4pt; color: rgba(243, 238, 228, 0.65); margin-top: 1mm; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<section class="page cover">
+  <div class="frame"></div>
+
+  <div class="top">
+    <div class="monogram">SPA</div>
+    <div class="label">October 2026</div>
+  </div>
+
+  <div class="title-block">
+    <div class="label kicker">A Premier Customer Proposal</div>
+    <h1>Seamless device<br>access for<br><em>HSBC Expat</em></h1>
+    <div class="rule"></div>
+    <p class="sub">Replacing a phone should never mean losing access to your money.</p>
+  </div>
+
+  <div class="meta">
+    <div>
+      <div class="label">Prepared for</div>
+      <div class="name">Anastasia Soldatova</div>
+      <div class="role">Head of HSBC Expat, Jersey</div>
+    </div>
+    <div>
+      <div class="label">Prepared by</div>
+      <div class="name">Santiago Puig Asensio</div>
+      <div class="role">HSBC Expat Premier customer</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 — ISSUE ================= -->
+<section class="page">
+  <div class="inner">
+    <div class="runner">
+      <span class="label">Seamless device access · HSBC Expat</span>
+      <span class="folio">02</span>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><span class="num">01</span><h2>In brief</h2><span class="line"></span></div>
+      <p class="lead">
+        The HSBC Expat app works on one device, with no self-service way to move to a new one.
+        A routine phone change therefore depends on reaching the contact centre &mdash; which, in my case,
+        meant <em>more than a week without access to my accounts.</em> HSBC already solves this in the UK;
+        I&nbsp;propose bringing it to HSBC Expat.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><span class="num">02</span><h2>The issue today</h2><span class="line"></span></div>
+
+        <div class="journey">
+          <div class="step">
+            <div class="dot">1</div>
+            <h3>New phone</h3>
+            <p>A customer replaces, loses or upgrades their device.</p>
+          </div>
+          <div class="step">
+            <div class="dot">2</div>
+            <h3>App is locked</h3>
+            <p>One registered device, and no way to switch it in the app.</p>
+          </div>
+          <div class="step">
+            <div class="dot">3</div>
+            <h3>Call the bank</h3>
+            <p>The only route to re-register is by telephone.</p>
+          </div>
+          <div class="step end">
+            <div class="dot">4</div>
+            <h3>No answer</h3>
+            <p>Repeated calls at different hours go unanswered.</p>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="figure">7<span>+</span></div>
+          <div class="caption">days without access to my funds, despite repeated calls to the bank at different times of day.</div>
+        </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><span class="num">03</span><h2>Why it matters</h2><span class="line"></span></div>
+      <div class="pillars">
+        <div class="pillar">
+          <h3>Client trust</h3>
+          <p>Internationally mobile Premier clients change phones, numbers and countries more than most. Being unable to reach one&rsquo;s own money is the moment a valued relationship is most at risk.</p>
+        </div>
+        <div class="pillar">
+          <h3>Operating cost</h3>
+          <p>Every device change becomes an avoidable contact-centre call &mdash; adding to the very queues customers are struggling to get through.</p>
+        </div>
+        <div class="pillar">
+          <h3>Conduct &amp; resilience</h3>
+          <p>Customers locked out of their funds for days because of a process gap is exactly the kind of outcome regulators look at closely.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><span class="num">04</span><h2>Already solved within HSBC</h2><span class="line"></span></div>
+      <div class="proof">
+        <div class="label">HSBC UK<br>today</div>
+        <p>Customers set up a new device in the app using <em>Photo ID and a selfie</em> &mdash; no call, no waiting for a code. The capability already exists within the Group; this proposal extends it to HSBC Expat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 3 — SOLUTION ================= -->
+<section class="page">
+  <div class="inner">
+    <div class="runner">
+      <span class="label">Seamless device access · HSBC Expat</span>
+      <span class="folio">03</span>
+    </div>
+
+    <div class="section" style="margin-bottom: 15mm;">
+      <div class="section-head"><span class="num">05</span><h2>The proposal</h2><span class="line"></span></div>
+      <p class="lead" style="margin-bottom: 8mm;">
+        Keep the security of the one-device model.<br><em>Remove the dependency on a phone call.</em>
+      </p>
+
+      <div class="cards">
+        <div class="card">
+          <div class="n">01</div>
+          <div><h3>Sign in</h3><p>On the new device, with the customer&rsquo;s existing username and password.</p></div>
+        </div>
+        <div class="card">
+          <div class="n">02</div>
+          <div><h3>Verify</h3><p>Photo ID and a liveness selfie matched to the KYC record already held, plus a one-time code to the registered phone or email.</p></div>
+        </div>
+        <div class="card">
+          <div class="n">03</div>
+          <div><h3>Retire the old device</h3><p>The previous device is deregistered automatically, with an instant alert by email and SMS.</p></div>
+        </div>
+        <div class="card">
+          <div class="n">04</div>
+          <div><h3>Protected start</h3><p>Balances and existing payees available at once; new payees and high-value payments unlock after a 24&ndash;72 hour safety window.</p></div>
+        </div>
+      </div>
+
+      <div class="extras">
+        <div class="extra"><span class="mark">+</span><span><b>Optional second trusted device</b>, such as a tablet, so one lost phone never means zero access.</span></div>
+        <div class="extra"><span class="mark">+</span><span><b>Bookable Premier call-back</b> in the app for the genuine exceptions that still need a person.</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><span class="num">06</span><h2>Outcomes</h2><span class="line"></span></div>
+      <div class="outcomes">
+        <div class="outcome">
+          <div class="big">Minutes, <em>not days</em></div>
+          <p>Moving to a new device becomes a short, self-service step.</p>
+        </div>
+        <div class="outcome">
+          <div class="big">Fewer <em>calls</em></div>
+          <p>Device changes leave the contact-centre queue, freeing it for complex needs.</p>
+        </div>
+        <div class="outcome">
+          <div class="big">Stronger <em>security</em></div>
+          <p>Old devices revoked instantly; risk-based limits on a new device.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="request">
+    <div>
+      <div class="label">The request</div>
+      <p class="ask">A 30-minute conversation with the owner of the HSBC Expat app roadmap. I would be glad to share my experience in detail and to <em>take part in testing or customer research.</em></p>
+    </div>
+    <div class="sig">
+      <div class="name">Santiago Puig Asensio</div>
+      <div class="role">HSBC Expat Premier customer<br>spuigp@gmail.com</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
