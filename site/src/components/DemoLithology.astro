@@ -1,0 +1,184 @@
+---
+import { demos } from "../content/content";
+import { coreSamples } from "../content/lithology-samples";
+const available = coreSamples;
+---
+<div data-lithology>
+  <noscript><p class="mt-4 text-sm">This demo needs JavaScript.</p></noscript>
+
+  <fieldset class="mt-5">
+    <legend class="text-sm font-medium text-ink">Pick a public sample photo</legend>
+    <div class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {available.map((s) => (
+        <button type="button" data-sample={s.id}
+          class="group text-left rounded-md border border-line bg-paper overflow-hidden hover:border-ink aria-pressed:border-ink aria-pressed:ring-2 aria-pressed:ring-ink"
+          aria-pressed="false">
+          <img src={s.file} alt={s.alt} width="320" height="200" loading="lazy" decoding="async" class="w-full aspect-[16/10] object-cover" />
+          <span class="block px-2 py-1.5 font-mono text-xs text-muted group-hover:text-ink">{s.label}</span>
+        </button>
+      ))}
+    </div>
+    <p class="mt-2 text-xs text-muted">
+      Photos from Wikimedia Commons, resized:{" "}
+      {available.map((s, i) => (
+        <>{i > 0 && "; "}{s.label.replace("Sample ", "")} by {s.author}, <a class="underline" href={s.sourceUrl} rel="noopener">{s.licenseUrl ? s.license : s.license.toLowerCase()}</a></>
+      ))}.
+    </p>
+  </fieldset>
+
+  <div class="mt-4 flex flex-wrap items-center gap-3">
+    <span class="text-sm text-muted">or</span>
+    <label class="inline-flex items-center px-4 py-2.5 rounded-md border border-ink text-ink font-medium cursor-pointer hover:bg-paper focus-within:outline-2 focus-within:outline-iron-ink">
+      Upload a core photo
+      <input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" data-photo />
+    </label>
+    <span class="text-xs text-muted">JPEG, PNG or WebP. Resized in your browser and stripped of location data before it's sent.</span>
+  </div>
+
+  <p class="mt-5 text-sm min-h-5" role="status" aria-live="polite" data-lstatus></p>
+
+  <div hidden data-lresult class="mt-2 grid gap-5 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+    <img data-preview alt="" class="w-full rounded-md border border-line object-cover max-h-80" />
+    <article class="border border-line rounded-md p-5 bg-paper" aria-live="polite" data-card></article>
+  </div>
+
+  <p class="mt-5 text-sm font-medium text-ink border-l-2 border-iron pl-3">{demos.lithology.disclaimer}</p>
+</div>
+
+<script>
+  import { coreSamples } from "../content/lithology-samples";
+
+  type Reading = {
+    is_core_photo: boolean;
+    likely_lithology: string;
+    confidence: "low" | "medium" | "high";
+    confidence_reason: string;
+    features: Record<"colour" | "grain_size" | "texture" | "veining" | "other", string>;
+    alternatives: { lithology: string; why_not_first: string }[];
+    check_next: string[];
+  };
+
+  const root = document.querySelector<HTMLElement>("[data-lithology]")!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const status = q("[data-lstatus]"), result = q("[data-lresult]"), card = q("[data-card]");
+  const preview = q<HTMLImageElement>("[data-preview]");
+  const LONG_EDGE = 1568;       // enough detail for texture; keeps image tokens down
+  const MAX_ORIGINAL = 20 * 1024 * 1024; // originals are resized here, never uploaded as-is
+  let runId = 0;
+
+  const el = (tag: string, cls = "", text = "") => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text) e.textContent = text;
+    return e;
+  };
+  const say = (m: string, err = false) => { status.textContent = m; status.classList.toggle("text-iron-ink", err); };
+
+  /** Draw to a canvas and re-encode: resizes, and drops EXIF (GPS, camera) data. */
+  async function prepare(blob: Blob): Promise<{ b64: string; url: string }> {
+    const bmp = await createImageBitmap(blob);
+    const scale = Math.min(1, LONG_EDGE / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas");
+    c.width = Math.round(bmp.width * scale);
+    c.height = Math.round(bmp.height * scale);
+    c.getContext("2d")!.drawImage(bmp, 0, 0, c.width, c.height);
+    bmp.close();
+    const out = await new Promise<Blob>((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/jpeg", 0.85));
+    const buf = new Uint8Array(await out.arrayBuffer());
+    let bin = "";
+    for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
+    return { b64: btoa(bin), url: URL.createObjectURL(out) };
+  }
+
+  function renderReading(r: Reading, sourceSays?: string) {
+    card.replaceChildren();
+    if (!r.is_core_photo) {
+      card.append(el("p", "font-semibold text-ink", "This doesn't look like rock core."), el("p", "mt-2 text-sm", r.confidence_reason));
+      return;
+    }
+    const head = el("div", "flex flex-wrap items-baseline justify-between gap-2");
+    head.append(el("h4", "text-xl font-semibold text-ink", r.likely_lithology),
+      el("span", "font-mono text-xs uppercase tracking-wider border border-current rounded px-1.5 py-0.5 text-muted", `Confidence: ${r.confidence}`));
+    card.append(el("p", "font-mono text-xs uppercase tracking-wider text-muted", "Likely lithology"), head,
+      el("p", "mt-1 text-sm text-muted", r.confidence_reason));
+
+    const dl = el("dl", "mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm");
+    for (const [k, label] of [["colour", "Colour"], ["grain_size", "Grain size"], ["texture", "Texture"], ["veining", "Veining"], ["other", "Other"]] as const) {
+      if (!r.features[k]) continue;
+      dl.append(el("dt", "font-mono text-xs uppercase tracking-wider text-muted pt-0.5", label), el("dd", "", r.features[k]));
+    }
+    card.append(dl);
+
+    if (r.alternatives.length) {
+      card.append(el("h5", "mt-4 font-semibold text-ink text-sm", "Could also be"));
+      const ul = el("ul", "mt-1 grid gap-1 text-sm list-disc pl-5");
+      r.alternatives.forEach((a) => ul.append(el("li", "", `${a.lithology}: ${a.why_not_first}`)));
+      card.append(ul);
+    }
+    if (r.check_next.length) {
+      card.append(el("h5", "mt-4 font-semibold text-ink text-sm", "Check next"));
+      const ul = el("ul", "mt-1 grid gap-1 text-sm list-disc pl-5");
+      r.check_next.forEach((c) => ul.append(el("li", "", c)));
+      card.append(ul);
+    }
+    if (sourceSays) {
+      const p = el("p", "mt-4 pt-3 border-t border-line text-sm");
+      p.append(el("span", "font-mono text-xs uppercase tracking-wider text-muted", "What the photo's source says: "), document.createTextNode(sourceSays));
+      card.append(p);
+    }
+  }
+
+  async function analyse(blob: Blob, sourceSays?: string) {
+    const my = ++runId;
+    say("Preparing the image…");
+    let img;
+    try { img = await prepare(blob); } catch { say("Couldn't open that image. Try a JPEG or PNG.", true); return; }
+    if (my !== runId) return;
+    preview.src = img.url;
+    result.hidden = false;
+    card.replaceChildren(el("p", "text-muted", "Asking Claude…"));
+    say("Asking Claude…");
+    try {
+      const resp = await fetch("/api/lithology", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ image: img.b64, mediaType: "image/jpeg" }),
+      });
+      const data = (await resp.json().catch(() => ({ error: "The server sent an unreadable reply." }))) as
+        { error?: string; reading?: Reading; remaining?: number };
+      if (my !== runId) return;
+      if (!resp.ok || !data.reading) {
+        card.replaceChildren(el("p", "text-muted", data.error ?? "The reading isn't available right now."));
+        if (sourceSays) card.append(el("p", "mt-3 text-sm", `What the photo's source says: ${sourceSays}`));
+        say("No reading this time (see below).");
+        return;
+      }
+      renderReading(data.reading, sourceSays);
+      say(`Done. ${data.remaining} reading${data.remaining === 1 ? "" : "s"} left this hour.`);
+    } catch {
+      if (my !== runId) return;
+      card.replaceChildren(el("p", "text-muted", "Couldn't reach the server."));
+      say("Couldn't reach the server.", true);
+    }
+  }
+
+  root.querySelectorAll<HTMLButtonElement>("[data-sample]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const s = coreSamples.find((x) => x.id === btn.dataset.sample)!;
+      root.querySelectorAll("[data-sample]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      const blob = await (await fetch(s.file)).blob();
+      analyse(blob, s.sourceSays);
+    });
+  });
+
+  q<HTMLInputElement>("[data-photo]").addEventListener("change", (ev) => {
+    const input = ev.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = "";
+    if (!file) return;
+    root.querySelectorAll("[data-sample]").forEach((b) => b.setAttribute("aria-pressed", "false"));
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) { say("Please use a JPEG, PNG or WebP photo.", true); return; }
+    if (file.size > MAX_ORIGINAL) { say("That photo is over 20 MB. Try a smaller one.", true); return; }
+    analyse(file);
+  });
+</script>

@@ -61,3 +61,15 @@ Short entries: date · decision · what went wrong · fix. This file becomes the
 - **Went wrong:** a slow AI reply for an earlier file could overwrite the results of a newer one. **Fix:** each run gets an id and stale replies are ignored.
 - **Went wrong:** the Cloudflare key saved in the build environment had expired, and the environment's proxy overrides any token sent by hand. Deploy is blocked until it's replaced.
 - **Checked:** error paths return 400/405/413/422/503 with readable messages; the limiter blocks the 11th request in an hour; CSV and XLSX give the same result; axe-core clean; no horizontal scroll at 390 px.
+
+## 2026-11-27 · Phase 5 — Demo 2: lithology helper
+
+- **Decision:** four openly licensed core photos from Wikimedia Commons: komatiite with spinifex texture (Widgiemooltha, WA), polymict conglomerate, listwanite (Oman) and dolostone (Ohio). Three are public domain or CC0; the dolostone is CC BY-SA 4.0, so every photo is credited on the page itself, and `CREDITS.md` is generated from the same list.
+- **Decision:** after Claude answers, the page shows what the photo's *source* says the rock is. Visitors can judge the answer themselves instead of taking it on trust.
+- **Decision:** Claude returns structured JSON: likely lithology, the features it relied on (colour, grain size, texture, veining, other), a confidence with the reason for it, up to three alternatives and why they rank lower, and quick physical checks (acid, scratch, hand lens) that would settle it. A photo that isn't rock is flagged, not forced into a rock name. The disclaimer "An assistant, not a geologist" is always visible.
+- **Privacy:** photos are redrawn on a canvas in the browser before upload. That resizes them to 1568 px on the long edge (enough for texture, fewer image tokens) and drops EXIF metadata, including any GPS location a phone adds. Tested: a 4000×3000 photo is sent at 1568×1176 with no EXIF block.
+- **Decision:** the 2 MB limit applies to what reaches the server. Originals up to 20 MB are accepted in the browser because they're shrunk before upload, never sent as-is.
+- **Decision:** the server checks the image's first bytes, not just its declared type, so a text file renamed `.jpg` is refused with a clear message.
+- **Went wrong:** Wikimedia Commons rate-limited this build machine's shared IP (HTTP 429), and only served thumbnails at its standard sizes. **Fix:** used the standard 960 px and 1280 px thumbnails and spaced out requests. The granite photo never got through, so it was dropped rather than replaced with an unverified image.
+- **Went wrong:** alt text written before seeing two of the photos was inaccurate ("dark green" core was grey-green). **Fix:** every image was checked by eye and its alt text rewritten from what's actually in it.
+- **Not yet tested against Claude:** no API key in the build environment. The result card was checked with a hand-written stub reply (layout only, clearly marked in the test).

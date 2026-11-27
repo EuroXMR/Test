@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run todos && astro build",
+    "build": "npm run todos && npm run credits && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "todos": "node scripts/todos.ts",
     "types": "wrangler types --include-runtime=false",
     "sample": "node scripts/make-sample.ts",
-    "test": "node scripts/test-rules.ts"
+    "test": "node scripts/test-rules.ts",
+    "credits": "node scripts/credits.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.14.0",

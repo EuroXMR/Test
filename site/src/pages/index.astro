@@ -9,6 +9,7 @@ import Badge from "../components/Badge.astro";
 import CoreRail from "../components/CoreRail.astro";
 import Core3D from "../components/Core3D.astro";
 import DemoValidator from "../components/DemoValidator.astro";
+import DemoLithology from "../components/DemoLithology.astro";
 import { Content as BuildLog } from "../../BUILD_LOG.md";
 import {
   identity, hero, intervals, field, demos, ventures, operations,
@@ -70,13 +71,11 @@ const wrap = "mx-auto max-w-3xl";
           <p class="mt-3 text-[0.95rem] leading-relaxed max-w-2xl">{demos.validator.blurb}</p>
           <DemoValidator />
         </article>
-        <div class="mt-8 grid gap-8">
-          <article id="demo-lithology" class="border border-line rounded-md p-5 bg-paper-raised">
-            <div class="flex justify-between gap-2"><h3 class="text-lg font-semibold text-ink">{demos.lithology.title}</h3><Badge label="In development" /></div>
-            <p class="mt-3 text-[0.95rem] leading-relaxed">{demos.lithology.blurb}</p>
-            <p class="mt-3 text-sm text-muted">{demos.lithology.disclaimer}</p>
-          </article>
-        </div>
+        <article id="demo-lithology" class="mt-8 border border-line rounded-md p-5 sm:p-6 bg-paper-raised scroll-mt-8" aria-labelledby="demo-lithology-title">
+          <h3 id="demo-lithology-title" class="text-lg font-semibold text-ink">{demos.lithology.title}</h3>
+          <p class="mt-3 text-[0.95rem] leading-relaxed max-w-2xl">{demos.lithology.blurb}</p>
+          <DemoLithology />
+        </article>
       </div>
     </section>
 
