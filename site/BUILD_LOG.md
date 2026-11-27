@@ -36,3 +36,5 @@ Short entries: date · decision · what went wrong · fix. This file becomes the
 - **Went wrong:** the first 3D core ran backwards (0 m on the right) because of how the cylinder's texture coordinates run. **Fix:** remapped them so depth increases left to right, matching the rail.
 - **Went wrong:** the footer failed contrast in the dark variant because it used theme colours that flip. **Fix:** the footer uses fixed colours.
 - **Designed both themes** (brief §5). The dark one is a `data-theme="dark"` token set; light is the default.
+
+- **Decision:** final domain is **sk1.au** (Santiago's personal brand). Registration stays at Squarespace; only the nameservers move to Cloudflare. No registrar transfer needed.
