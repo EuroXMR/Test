@@ -13,6 +13,6 @@ const { v } = Astro.props;
   <dl class="mt-3 grid gap-2 text-[0.95rem] leading-relaxed">
     <div><dt class="sr-only">What it is</dt><dd><T text={v.whatItIs} /></dd></div>
     <div class="flex gap-2"><dt class="font-mono text-xs uppercase tracking-wider text-muted pt-1">Role</dt><dd>{v.role}</dd></div>
-    <div><dt class="font-mono text-xs uppercase tracking-wider text-muted">Proof</dt><dd><T text={v.proof} /></dd></div>
+    <div><dt class="font-mono text-xs uppercase tracking-wider text-muted">Proof</dt><dd><T text={v.proof} />{v.link && <> <a class="underline underline-offset-4" href={v.link.href} rel="noopener">{v.link.label}</a></>}</dd></div>
   </dl>
 </article>

@@ -1,0 +1,108 @@
+---
+// Depth rail. Desktop: a fixed vertical core column on the left that "fills" as
+// you drill (scroll), with depth ticks and links to each interval.
+// Mobile: a thin segmented strip pinned to the top.
+// No JS or reduced motion: the core is shown complete and static.
+import { intervals } from "../content/content";
+import { TOTAL_DEPTH, ROCK, fmtDepth } from "../lib/core";
+const pct = (m: number) => `${(m / TOTAL_DEPTH) * 100}%`;
+const ticks = Array.from({ length: Math.floor(TOTAL_DEPTH / 10) + 1 }, (_, i) => i * 10);
+---
+<!-- Mobile strip -->
+<div class="lg:hidden sticky top-0 z-40 h-1.5 flex bg-line" aria-hidden="true" data-rail>
+  {intervals.map((iv) => <span style={`width:${pct(iv.to - iv.from)};background:${ROCK[iv.accent]}`}></span>)}
+  <span class="rail-mask absolute inset-y-0 right-0 bg-paper/85" style="left:var(--rail-p,100%)"></span>
+</div>
+
+<!-- Desktop rail -->
+<nav aria-label="Core log: jump to an interval"
+     class="hidden lg:flex fixed left-0 top-0 bottom-0 w-28 z-30 flex-col items-center py-8 border-r border-line bg-paper"
+     data-rail>
+  <p class="font-mono text-[0.65rem] tracking-[0.18em] text-muted">DEPTH</p>
+  <p class="font-mono text-sm text-ink tabular-nums" aria-hidden="true"><span data-rail-depth>{fmtDepth(TOTAL_DEPTH)}</span> m</p>
+  <div class="relative mt-5 flex-1 w-full">
+    <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-5 rounded-sm overflow-hidden shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]">
+      {intervals.map((iv) => (
+        <span class="absolute inset-x-0" style={`top:${pct(iv.from)};height:${pct(iv.to - iv.from)};background:${ROCK[iv.accent]}`}></span>
+      ))}
+      <span class="absolute inset-0 rail-sheen"></span>
+      <span class="rail-mask absolute inset-x-0 bottom-0 bg-paper/85" style="top:var(--rail-p,100%)"></span>
+    </div>
+    <!-- depth ticks (right) -->
+    {ticks.map((m) => (
+      <span aria-hidden="true" class="absolute left-[calc(50%+14px)] -translate-y-1/2 font-mono text-[0.6rem] text-muted tabular-nums" style={`top:${pct(m)}`}>{m}</span>
+    ))}
+    <!-- interval links (left) -->
+    <ol>
+      {intervals.map((iv) => (
+        <li class="absolute right-[calc(50%+14px)] -translate-y-1/2" style={`top:${pct((iv.from + iv.to) / 2)}`}>
+          <a href={`#${iv.slug}`} data-rail-link={iv.slug}
+             class="block font-mono text-[0.65rem] text-muted hover:text-ink px-1 rounded"
+             aria-label={`Interval ${iv.n}: ${iv.label}, ${fmtDepth(iv.from)} to ${fmtDepth(iv.to)} m`}>{iv.n}</a>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <p class="mt-4 font-mono text-[0.6rem] tracking-[0.18em] text-muted">EOH</p>
+</nav>
+
+<script>
+  import { intervals } from "../content/content";
+  import { TOTAL_DEPTH } from "../lib/core";
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  const rails = document.querySelectorAll<HTMLElement>("[data-rail]");
+  const readout = document.querySelector<HTMLElement>("[data-rail-depth]");
+  const links = document.querySelectorAll<HTMLElement>("[data-rail-link]");
+  const sections = intervals.map((iv) => ({ iv, el: document.getElementById(iv.slug) }));
+  const footer = document.getElementById("contact");
+
+  // Map the viewport's reading line to a depth: inside interval i, depth moves
+  // linearly from iv.from to iv.to, so the rail always agrees with the headers.
+  function depthNow() {
+    const line = window.innerHeight * 0.35;
+    if (footer && footer.getBoundingClientRect().top < line) return { d: TOTAL_DEPTH, slug: "" };
+    let d = 0, slug = "";
+    for (const { iv, el } of sections) {
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      if (r.top > line) break;
+      const f = Math.min(1, Math.max(0, (line - r.top) / r.height));
+      d = iv.from + (iv.to - iv.from) * f;
+      slug = iv.slug;
+    }
+    return { d, slug };
+  }
+
+  let queued = false;
+  function update() {
+    queued = false;
+    const { d, slug } = depthNow();
+    const p = `${(d / TOTAL_DEPTH) * 100}%`;
+    rails.forEach((r) => r.style.setProperty("--rail-p", p));
+    if (readout) readout.textContent = d.toFixed(1);
+    links.forEach((a) => {
+      const on = a.dataset.railLink === slug;
+      a.classList.toggle("text-ink", on);
+      a.classList.toggle("font-semibold", on);
+      if (on) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+  }
+  const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+
+  function apply() {
+    if (reduce.matches) {
+      // Static, complete core-log: no scroll-driven change at all.
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      rails.forEach((r) => r.style.removeProperty("--rail-p"));
+      if (readout) readout.textContent = TOTAL_DEPTH.toFixed(1);
+      return;
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+  }
+  reduce.addEventListener("change", apply);
+  apply();
+</script>

@@ -1,0 +1,27 @@
+---
+// Hero core. Renders the static SVG first (works with no JS and with reduced
+// motion). If the hero is on screen, motion is allowed and WebGL exists, it
+// lazy-loads Three.js and swaps in a slowly rotating 3D core.
+import CoreSVG from "./CoreSVG.astro";
+---
+<div class="core3d relative w-full aspect-[4/1]" data-core3d>
+  <CoreSVG class="absolute inset-0 w-full h-full transition-opacity duration-700" />
+  <canvas class="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-700" aria-hidden="true"></canvas>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-core3d]");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const hasGL = () => {
+    try { return !!document.createElement("canvas").getContext("webgl2"); } catch { return false; }
+  };
+  if (root && !reduce.matches && hasGL()) {
+    const io = new IntersectionObserver(async (entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      const { mountCore } = await import("../lib/core3d");
+      mountCore(root);
+    }, { rootMargin: "200px" });
+    io.observe(root);
+  }
+</script>

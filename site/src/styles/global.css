@@ -53,3 +53,29 @@ mark.todo {
 .buildlog p { margin-top: 0.75rem; }
 .buildlog ul { list-style: disc; padding-left: 1.25rem; margin-top: 0.75rem; display: grid; gap: 0.5rem; }
 .buildlog code { font-family: var(--font-mono); font-size: 0.85em; }
+
+/* Cylinder shading on the rail core (light from the left). */
+.rail-sheen {
+  background: linear-gradient(90deg, rgba(255,255,255,0.22), rgba(255,255,255,0.04) 40%, rgba(0,0,0,0.25));
+}
+
+/* Dark variant (brief §5: design both, then pick). Preview by setting
+   data-theme="dark" on <html>. Not shipped as a toggle. */
+[data-theme="dark"] {
+  --color-paper: #151513;
+  --color-paper-raised: #1d1d1a;
+  --color-ink: #f1ede4;
+  --color-body: #d9d4c9;
+  --color-muted: #a29c91;
+  --color-line: #34332f;
+  --color-iron-ink: #d98b70;
+  --color-basalt-ink: #b3b6b9;
+  --color-quartz-ink: #cfc9bd;
+  --color-ochre-ink: #d4b27a;
+  --color-slate-ink: #9db4c6;
+}
+[data-theme="dark"] mark.todo { background: #5a4a10; color: #fff3c2; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

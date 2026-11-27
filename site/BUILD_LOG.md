@@ -23,3 +23,16 @@ Short entries: date · decision · what went wrong · fix. This file becomes the
 - **Decision:** light (off-white) palette for now; accent colours have darker "-ink" variants so text meets WCAG AA. Fonts are self-hosted (no Google Fonts request, no cookies).
 - **Went wrong:** interval colour chips were missing, because Tailwind can't see class names built from data. **Fix:** generated them explicitly with `@source inline(...)`.
 - **Checked:** axe-core (WCAG 2 A/AA + best practice) reports no violations; no horizontal scroll at 390 px.
+
+## 2026-11-27 · Phase 3 — The Core
+
+- **Facts updated** from Santiago's answers: Lead Geology Technician at Lynas (current), Visual Design degree in Madrid with a year at Sogang, Cert IV WHS held, City of Fremantle, MEPA is the entity bidding on the government tender, Saint & Saint Studio project site added.
+- **Decision:** the AI case study is labelled **In trial**. Santiago can't disclose details while it runs, so the site says so instead of padding it.
+- **Decision:** depths are a design device, not facts. The hole is 72.0 m: each interval owns a fixed depth range stored in `content.ts`, and the headers, rail, 3D core and footer all read from it.
+- **Decision:** the rail maps scroll position to depth *within* each section, so the depth readout always agrees with the interval header you're reading.
+- **Decision:** the hero shows a static SVG core first. Three.js (about 530 KB) is only fetched once the hero is on screen, motion is allowed and WebGL works. Rendering pauses when the core is off-screen or the tab is hidden.
+- **Decision:** the stone texture is generated in the browser, not downloaded: grain, plus contacts and veins drawn as sine waves, because a flat plane cutting a cylinder unrolls to a sine. A fixed seed makes it look the same every visit.
+- **Decision:** reduced motion shows the complete static core (no rotation, no scroll-driven fill), and switches over live if the setting changes mid-visit.
+- **Went wrong:** the first 3D core ran backwards (0 m on the right) because of how the cylinder's texture coordinates run. **Fix:** remapped them so depth increases left to right, matching the rail.
+- **Went wrong:** the footer failed contrast in the dark variant because it used theme colours that flip. **Fix:** the footer uses fixed colours.
+- **Designed both themes** (brief §5). The dark one is a `data-theme="dark"` token set; light is the default.

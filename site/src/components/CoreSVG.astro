@@ -1,0 +1,42 @@
+---
+// Static core graphic: the no-JS / reduced-motion fallback for the 3D hero,
+// and the base of the Open Graph image. Pieces of cylinder, banded by interval.
+import { intervals } from "../content/content";
+import { TOTAL_DEPTH, ROCK, BREAKS } from "../lib/core";
+interface Props { class?: string }
+const W = 1000, H = 250, PAD = 20, R = 57, CY = H / 2;
+const x = (m: number) => PAD + ((W - 2 * PAD) * m) / TOTAL_DEPTH;
+const cuts = [0, ...BREAKS, TOTAL_DEPTH];
+const pieces = cuts.slice(0, -1).map((a, i) => [a, cuts[i + 1]] as const);
+const GAP = 6;
+// Planar veins: a plane through a cylinder, seen from the side, is a straight
+// oblique line across the visible face.
+const veins = [4.2, 17.5, 30.1, 44.8, 58.3, 69.0];
+---
+<svg viewBox={`0 0 ${W} ${H}`} class={Astro.props.class} role="img"
+     aria-label="Illustration of a diamond drill core, banded by interval from 0 to 72 metres">
+  <defs>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.28" />
+      <stop offset="0.35" stop-color="#fff" stop-opacity="0.06" />
+      <stop offset="0.7" stop-color="#000" stop-opacity="0.12" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.38" />
+    </linearGradient>
+    {pieces.map(([a, b], i) => (
+      <clipPath id={`piece-${i}`}>
+        <rect x={x(a) + (i ? GAP / 2 : 0)} y={CY - R} width={x(b) - x(a) - (i ? GAP / 2 : 0) - (i < pieces.length - 1 ? GAP / 2 : 0)} height={2 * R} rx="8" />
+      </clipPath>
+    ))}
+  </defs>
+  {pieces.map((_, i) => (
+    <g clip-path={`url(#piece-${i})`}>
+      {intervals.map((iv) => (
+        <rect x={x(iv.from)} y={CY - R} width={x(iv.to) - x(iv.from) + 0.5} height={2 * R} fill={ROCK[iv.accent]} />
+      ))}
+      {veins.map((m, k) => (
+        <line x1={x(m)} y1={CY - R} x2={x(m) + (k % 2 ? 26 : -20)} y2={CY + R} stroke="#efe9dc" stroke-opacity="0.55" stroke-width={k % 3 ? 1.5 : 3} />
+      ))}
+      <rect x="0" y={CY - R} width={W} height={2 * R} fill="url(#shade)" />
+    </g>
+  ))}
+</svg>

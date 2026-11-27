@@ -7,7 +7,7 @@
  *  - No employer/client data, no addresses, phone or document numbers.
  */
 
-export type Status = "Active" | "In development" | "Concept" | "Under negotiation" | "[TODO: status]";
+export type Status = "Active" | "In trial" | "In development" | "Concept" | "Under negotiation" | "Tender in progress" | "[TODO: status]";
 
 export interface CaseCard {
   id: string;
@@ -27,6 +27,7 @@ export interface Venture {
   role: string;
   status: Status;
   proof: string;
+  link?: { label: string; href: string };
 }
 
 export interface Role {
@@ -42,6 +43,8 @@ export interface Interval {
   slug: string;
   label: string;
   accent: "iron" | "basalt" | "quartz" | "ochre" | "slate";
+  from: number; // depth in metres, used for the core log + rail
+  to: number;
 }
 
 // ---------------------------------------------------------------- identity
@@ -67,7 +70,7 @@ export const hero = {
   headline: "I bring AI into places nobody else is using it — and get people to adopt it.",
   subheadline:
     "Field operator, designer and founder. From diamond drilling rigs in Western Australia to offshore platforms in Norway and luxury design in Madrid.",
-  currently: "Currently: Geology Technician, Western Australia · Building with Claude [TODO: confirm — CV shows the last contract (Lynas) finished 10/2026]",
+  currently: "Now: Lead Geology Technician, Western Australia · Director, Saint & Saint Studio · Founder, MEPA · Building with Claude",
   ctas: [
     { label: "Try the demos", href: "#demos" },
     { label: "Case studies", href: "#field" },
@@ -76,16 +79,16 @@ export const hero = {
 };
 
 // ---------------------------------------------------------------- intervals
-// Depth ranges are assigned in Phase 3 once section heights are known.
+// Depth ranges are a design device (the site is a drill hole), not facts.
 export const intervals: Interval[] = [
-  { n: "01", slug: "field", label: "AI in the field", accent: "iron" },
-  { n: "02", slug: "demos", label: "Live demos", accent: "slate" },
-  { n: "03", slug: "ventures", label: "Ventures", accent: "ochre" },
-  { n: "04", slug: "operations", label: "Field operations", accent: "basalt" },
-  { n: "05", slug: "design", label: "Design", accent: "quartz" },
-  { n: "06", slug: "lab", label: "Local AI lab", accent: "slate" },
-  { n: "07", slug: "built", label: "How I built this site", accent: "basalt" },
-  { n: "08", slug: "learning", label: "Currently learning", accent: "ochre" },
+  { n: "01", slug: "field", label: "AI in the field", accent: "iron", from: 0, to: 12.4 },
+  { n: "02", slug: "demos", label: "Live demos", accent: "slate", from: 12.4, to: 21.8 },
+  { n: "03", slug: "ventures", label: "Ventures", accent: "ochre", from: 21.8, to: 33.0 },
+  { n: "04", slug: "operations", label: "Field operations", accent: "basalt", from: 33.0, to: 47.6 },
+  { n: "05", slug: "design", label: "Design", accent: "quartz", from: 47.6, to: 55.2 },
+  { n: "06", slug: "lab", label: "Local AI lab", accent: "slate", from: 55.2, to: 60.9 },
+  { n: "07", slug: "built", label: "How I built this site", accent: "basalt", from: 60.9, to: 68.3 },
+  { n: "08", slug: "learning", label: "Currently learning", accent: "ochre", from: 68.3, to: 72.0 },
 ];
 
 // ---------------------------------------------------------------- 01 AI in the field
@@ -96,12 +99,13 @@ export const field = {
     {
       id: "validation",
       title: "Drilling data validation",
+      badge: "In trial",
       stat: "~1 error every 30 m",
       problem: "Manual data entry of metres and depths in a grade control program.",
       whatIDid:
         "Strip private data → AI checks for discrepancies and impossible values → errors are fixed before they reach the geologists.",
       result:
-        "1–2 errors per hole caught. [TODO: holes per program or per week, to show total scale] [TODO: one anonymised example of a typical error]",
+        "1–2 errors per hole caught. More detail once the trial allows it. [TODO: confirm the 1–2 errors per hole and ~1 per 30 m figures can be published while the trial runs]",
       note: "Private data is removed before anything reaches an AI model: it only sees numbers and standard sample codes.",
       cta: { label: "Try a version of this →", href: "#demo-validator" },
     },
@@ -156,9 +160,9 @@ export const ventures = {
       name: "MEPA",
       whatItIs: "Non-governmental organisation. [TODO: one-line mission of MEPA]",
       role: "Founder",
-      status: "[TODO: status]",
+      status: "Tender in progress",
       proof:
-        "Has won cleaning contracts [TODO: number / scale]. Pursuing an Australian Government contract [TODO: confirm which venture is bidding and the status label (tender in preparation / submitted / under negotiation)]",
+        "Has won cleaning contracts [TODO: number / scale]. Currently bidding on an Australian Government tender [TODO: confirm status: in preparation or submitted]",
     },
     {
       name: "Polar Vector Limited (UK)",
@@ -172,8 +176,9 @@ export const ventures = {
       name: "Saint & Saint Studio (Cyprus)",
       whatItIs: "Real-estate project in Cyprus.",
       role: "Director",
-      status: "[TODO: status]",
-      proof: "[TODO: one proof point]",
+      status: "Active",
+      proof: "[TODO: one proof point, e.g. units, stage or sales]",
+      link: { label: "Project site: hermesvillas.com", href: "https://hermesvillas.com" },
     },
     {
       name: "Perth web studio",
@@ -189,7 +194,7 @@ export const ventures = {
 // ---------------------------------------------------------------- 04 field operations
 export const operations = {
   callout:
-    "Safety-critical environments: offshore oil & gas, supply vessels, diamond drilling. Studying Cert IV WHS.",
+    "Safety-critical environments: offshore oil & gas, supply vessels, diamond drilling. Certificate IV in Work Health and Safety.",
   themes: [
     "Safety-critical operations",
     "Strict procedures",
@@ -204,7 +209,7 @@ export const operations = {
       title: "Lead Geology Technician",
       org: "Lynas Rare Earths (via Mining International People)",
       place: "Western Australia · FIFO 8/6",
-      dates: "06/2026 – 10/2026 (contract finished early)",
+      dates: "06/2026 – present",
       notes: [
         "Ran the RC grade control program on my own, without a Senior Geology Technician, coordinating daily with the geology team.",
         "Managed the full sample chain of custody: pad preparation, sampling, registration, data entry, lab dispatch and follow-up.",
@@ -229,11 +234,11 @@ export const operations = {
       title: "Exploration Driller Offsider (diamond core)",
       org: "West Core Drilling",
       place: "Western Australia · FIFO 2/1",
-      dates: "04/2025 – 06/2025 [TODO: confirm — brief said Geology Technician / Offsider, Apr 2025 – present]",
+      dates: "04/2025 – 06/2025",
     },
     {
       title: "Recycling Auditor",
-      org: "[TODO: confirm employer name — CV says 'Government of Fremantle']",
+      org: "City of Fremantle",
       place: "Perth, WA",
       dates: "01/2025 – 04/2025",
     },
@@ -288,13 +293,13 @@ export const operations = {
     "WA driver licence + Heavy Rigid (L-plate)",
   ],
   software: "acQuire, Arena, Imago, MS Office",
-  study: "Certificate IV in Work Health and Safety (BSB41419) [TODO: confirm — CV lists it as held; brief says studying units BSBWHS412, 413, 414]",
+  study: "Certificate IV in Work Health and Safety (BSB41419)",
 };
 
 // ---------------------------------------------------------------- 05 design
 export const design = {
   line: "Design is how I explain things: I make complex ideas visible.",
-  degree: "Degree in Visual Design, Madrid · [TODO: official institution name + year] [TODO: confirm vs CV, which lists 'Sogang University, Technology Degree, 2018–2022']",
+  degree: "Degree in Visual Design, Madrid · [TODO: official institution name + year]",
   exchange: "One year at Sogang University, Seoul, South Korea",
   balenciaga: "Design work with Balenciaga Madrid · [TODO: exact role, dates]",
   practice: "Art direction, photography, branding.",
@@ -328,7 +333,7 @@ export const learning = {
 
 // ---------------------------------------------------------------- EOH
 export const contact = {
-  footer: "END OF HOLE (EOH) · total depth [TODO: n] m",
+  footer: "END OF HOLE (EOH) · total depth 72.0 m",
 };
 
 // ---------------------------------------------------------------- CV PDF (same source)
