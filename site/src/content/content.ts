@@ -7,7 +7,7 @@
  *  - No employer/client data, no addresses, phone or document numbers.
  */
 
-export type Status = "Active" | "In trial" | "In development" | "Concept" | "Under negotiation" | "Tender in progress" | "[TODO: status]";
+export type Status = "Active" | "Pilot under way" | "In trial" | "In development" | "Concept" | "Under negotiation" | "Tender in progress" | "[TODO: status]";
 
 export interface CaseCard {
   id: string;
@@ -55,8 +55,9 @@ export const identity = {
   location: "Perth, Western Australia",
   locationShort: "Perth, WA",
   workRights: "EU work rights · Open to relocation",
-  email: "[TODO: email]",
-  linkedin: "[TODO: LinkedIn URL]",
+  // Forwarding address on sk1.au → Gmail (Cloudflare Email Routing). No LinkedIn: not used.
+  email: "deo@sk1.au",
+  emailNote: "[TODO: activate deo@sk1.au forwarding in Cloudflare before launch]",
   languages: [
     "Spanish (native)",
     "English (fluent)",
@@ -70,7 +71,7 @@ export const hero = {
   headline: "I bring AI into places nobody else is using it — and get people to adopt it.",
   subheadline:
     "Field operator, designer and founder. From diamond drilling rigs in Western Australia to offshore platforms in Norway and luxury design in Madrid.",
-  currently: "Now: Lead Geology Technician, Western Australia · Director, Saint & Saint Studio · Founder, MEPA · Building with Claude",
+  currently: "Now: Lead Geology Technician, Western Australia · Founder, MEPA and PolarVector · Director, Saint & Saint Studio · Building with Claude",
   ctas: [
     { label: "Try the demos", href: "#demos" },
     { label: "Case studies", href: "#field" },
@@ -157,20 +158,26 @@ export const ventures = {
   intro: "I start things and get people to sign. Some of what I've built:",
   items: [
     {
+      // Source: mepa.ngo (about, funders, projects, team pages), read 2026-11-27.
       name: "MEPA",
-      whatItIs: "Non-governmental organisation. [TODO: one-line mission of MEPA]",
-      role: "Founder",
-      status: "Tender in progress",
+      whatItIs:
+        "Mediterranean Environmental Protection Agency: an independent not-for-profit in Perth (incorporated association, WA). It's building a system that uses satellite radar, ship tracking and AI-assisted screening to find marine pollution and illegal fishing, then hands verified evidence to the authorities who can act.",
+      role: "Founder · Director and Principal Investigator",
+      status: "Pilot under way",
       proof:
-        "Has won cleaning contracts [TODO: number / scale]. Currently bidding on an Australian Government tender [TODO: confirm status: in preparation or submitted]",
+        "Radar screening of the shipping lanes south of Cyprus, with an analyst reviewing every strong detection, under way since October 2026. Bidding on an Australian Government tender for technology to monitor compliance in marine parks [TODO: confirm tender status: in preparation or submitted]. [TODO: brief said MEPA 'has won cleaning contracts' — confirm number/scale, or drop]",
+      link: { label: "mepa.ngo", href: "https://www.mepa.ngo" },
     },
     {
-      name: "Polar Vector Limited (UK)",
-      whatItIs: "Cybersecurity company. [TODO: what it does / clients]",
-      role: "Director and owner",
-      status: "[TODO: status]",
+      // Source: polarvector.uk/company + Companies House, read 2026-11-27.
+      name: "PolarVector (UK)",
+      whatItIs:
+        "Investigative intelligence for companies, people, vessels and events: connecting maritime, corporate, sanctions and open-source data into one entity graph, with on-the-ground verification when the record isn't enough. Also does security testing.",
+      role: "Founder and director",
+      status: "Active",
       proof:
-        "Incorporated ~2024 [TODO: exact date + company number]. Related project: PolarVector platform, a situational-awareness / risk-analysis tool (anomaly detection, entity relationships, compliance signals) [TODO: current status].",
+        "PolarVector Limited, registered in England and Wales on 2 April 2024 (company no. 15608431). Investigations partner to MEPA for vessel, ownership and sanctions research. [TODO: clients or engagements you can mention]",
+      link: { label: "polarvector.uk", href: "https://polarvector.uk" },
     },
     {
       name: "Saint & Saint Studio (Cyprus)",

@@ -38,3 +38,10 @@ Short entries: date · decision · what went wrong · fix. This file becomes the
 - **Designed both themes** (brief §5). The dark one is a `data-theme="dark"` token set; light is the default.
 
 - **Decision:** final domain is **sk1.au** (Santiago's personal brand). Registration stays at Squarespace; only the nameservers move to Cloudflare. No registrar transfer needed.
+
+## 2026-11-27 · Between phases — real sources for the ventures
+
+- **Decision:** the site has one audience: Anthropic's hiring team. Everything gets judged on whether it helps them assess Santiago.
+- **Decision:** MEPA and PolarVector copy now comes from their own websites (mepa.ngo, polarvector.uk) and Companies House, not from memory. Status labels follow what those sites say: MEPA's Cyprus radar pilot is "under way", the rest is "in progress", and MEPA's own funders page says its example vessel dossiers are illustrations. The CV site uses the most conservative wording.
+- **Decision:** no LinkedIn link (old, not used). Contact is a forwarding address on the personal domain.
+- **Found:** three versions of the degree in public: Madrid + a Sogang year (Santiago), Sogang "Technology Degree" (CV), and Sogang "Industrial Engineering and Visual Design" (MEPA profile). Flagged for him to align, because a recruiter will cross-check.

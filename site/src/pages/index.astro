@@ -17,7 +17,6 @@ import {
 const iv = Object.fromEntries(intervals.map((i) => [i.slug, i]));
 const section = "px-4 sm:px-8 py-20 sm:py-28 border-t border-line";
 const wrap = "mx-auto max-w-3xl";
-const isUrl = (s: string) => /^https?:\/\//.test(s);
 ---
 <Base
   title={`${identity.displayName} · AI in the field, ventures and live demos`}
@@ -172,12 +171,7 @@ const isUrl = (s: string) => /^https?:\/\//.test(s);
         <p class="font-mono text-xs sm:text-sm tracking-[0.14em] uppercase text-[#cfc9bd]">EOH · Contact</p>
         <h2 id="contact-title" class="mt-3 text-2xl sm:text-3xl font-semibold">Get in touch</h2>
         <ul class="mt-8 grid gap-2 text-lg">
-          <li>Email: {!identity.email.startsWith("[")
-            ? <a class="underline underline-offset-4" href={`mailto:${identity.email}`}>{identity.email}</a>
-            : <T text={identity.email} />}</li>
-          <li>LinkedIn: {isUrl(identity.linkedin)
-            ? <a class="underline underline-offset-4" href={identity.linkedin}>{identity.linkedin}</a>
-            : <T text={identity.linkedin} />}</li>
+          <li>Email: <a class="underline underline-offset-4" href={`mailto:${identity.email}`}>{identity.email}</a> <T text={identity.emailNote} /></li>
           <li><a class="underline underline-offset-4" href="/cv.pdf">Download CV (PDF)</a></li>
         </ul>
         <p class="mt-8">{identity.locationShort} · {identity.workRights}</p>
