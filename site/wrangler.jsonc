@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sk1-cv",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  // Hourly per-IP counters for the demo endpoints. Provisioned on first deploy.
+  "kv_namespaces": [{ "binding": "RATE_LIMIT" }],
+  "vars": {
+    "CLAUDE_MODEL": "claude-sonnet-5-5",
+    "RATE_LIMIT_PER_HOUR": "10"
+  }
+  // ANTHROPIC_API_KEY is a secret: `npx wrangler secret put ANTHROPIC_API_KEY`
+  // Never put it here, and never prefix it with PUBLIC_.
+}

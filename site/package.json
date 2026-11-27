@@ -8,22 +8,32 @@
     "build": "npm run todos && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "todos": "node scripts/todos.ts"
+    "todos": "node scripts/todos.ts",
+    "types": "wrangler types --include-runtime=false",
+    "sample": "node scripts/make-sample.ts",
+    "test": "node scripts/test-rules.ts"
   },
   "dependencies": {
-    "@astrojs/vercel": "11.0.22",
+    "@anthropic-ai/sdk": "^1.14.0",
+    "@astrojs/cloudflare": "^14.4.9",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@tailwindcss/vite": "4.3.5",
     "astro": "7.4.13",
+    "papaparse": "^5.7.1",
     "tailwindcss": "4.3.5",
-    "three": "^0.187.0"
+    "three": "^0.187.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@cloudflare/workers-types": "^5.20261127.1",
     "@types/node": "^22.20.7",
+    "@types/papaparse": "^5.5.2",
     "@types/three": "^0.187.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.168.0"
   },
   "engines": {
     "node": ">=22.23"

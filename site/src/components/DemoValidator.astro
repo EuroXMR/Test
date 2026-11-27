@@ -1,0 +1,231 @@
+---
+import { demos } from "../content/content";
+import { DEFAULT_STANDARD_EVERY, REQUIRED_COLUMNS } from "../lib/drilllog/rules";
+---
+<div class="demo-validator" data-validator>
+  <noscript><p class="mt-4 text-sm">This demo needs JavaScript. The sample file is still <a class="underline" href="/sample-drill-log.csv">downloadable here</a>.</p></noscript>
+
+  <div class="mt-5 flex flex-wrap items-center gap-3">
+    <button type="button" data-load-sample
+      class="inline-flex items-center px-4 py-2.5 rounded-md bg-ink text-paper font-medium hover:bg-body disabled:opacity-60">
+      Load sample data
+    </button>
+    <label class="inline-flex items-center px-4 py-2.5 rounded-md border border-ink text-ink font-medium cursor-pointer hover:bg-paper focus-within:outline-2 focus-within:outline-iron-ink">
+      Upload CSV or XLSX
+      <input type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="sr-only" data-file />
+    </label>
+    <a href="/sample-drill-log.csv" download class="text-sm underline underline-offset-4">Download the sample</a>
+  </div>
+
+  <details class="mt-4 text-sm text-muted">
+    <summary class="cursor-pointer">File format and settings</summary>
+    <p class="mt-2">Columns: <code class="font-mono text-xs">{REQUIRED_COLUMNS.join(", ")}</code>, plus optional <code class="font-mono text-xs">eoh_m</code> (stated end-of-hole depth). Max 2 MB.</p>
+    <label class="mt-3 flex items-center gap-2">
+      Expect a STANDARD at least every
+      <input type="number" min="2" max="100" value={DEFAULT_STANDARD_EVERY} data-std
+        class="w-16 rounded border border-line bg-paper px-2 py-1 font-mono text-ink" />
+      samples <span class="text-xs">(example rule, not a real program's QA/QC plan)</span>
+    </label>
+  </details>
+
+  <p class="mt-5 text-sm min-h-5" role="status" aria-live="polite" data-status></p>
+
+  <div hidden data-results>
+    <div class="flex flex-wrap items-baseline justify-between gap-3">
+      <p class="font-mono text-sm sm:text-base font-semibold text-ink" data-summary></p>
+      <button type="button" data-download class="text-sm underline underline-offset-4">Download flagged CSV</button>
+    </div>
+
+    <div class="mt-4 overflow-x-auto border border-line rounded-md">
+      <table class="w-full text-sm text-left">
+        <caption class="sr-only">Issues found, by line in the file</caption>
+        <thead class="bg-paper font-mono text-xs uppercase tracking-wider text-muted">
+          <tr><th scope="col" class="px-3 py-2">Line</th><th scope="col" class="px-3 py-2">Issue</th><th scope="col" class="px-3 py-2">Severity</th><th scope="col" class="px-3 py-2">Explanation</th></tr>
+        </thead>
+        <tbody data-tbody class="align-top"></tbody>
+      </table>
+    </div>
+
+    <section class="mt-6 border-l-2 border-slate pl-4" aria-labelledby="ai-review-title">
+      <h4 id="ai-review-title" class="font-mono text-xs uppercase tracking-wider text-slate-ink">Claude's review</h4>
+      <p class="mt-1 text-xs text-muted">Only the numbers and sample codes in the sheet are sent. Nothing is stored.</p>
+      <div class="mt-3 text-[0.95rem] leading-relaxed" data-ai aria-live="polite"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+  import Papa from "papaparse";
+  import { normalise, validate, summarise, InputError, type RawRow, type Result } from "../lib/drilllog/rules";
+
+  type Review = {
+    summary: string;
+    explanations: { line: number; plain_english: string; likely_fix: string }[];
+    extra_observations: { line: number | null; observation: string; why_it_matters: string; confidence: string }[];
+  };
+
+  const root = document.querySelector<HTMLElement>("[data-validator]")!;
+  const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const status = $("[data-status]"), results = $("[data-results]"), tbody = $("[data-tbody]");
+  const summary = $("[data-summary]"), ai = $("[data-ai]");
+  const stdInput = $<HTMLInputElement>("[data-std]");
+  const MAX = 2 * 1024 * 1024;
+
+  let records: RawRow[] = [];
+  let current: Result | null = null;
+  let fileName = "drill-log";
+  let runId = 0; // replies to an older file are ignored
+
+  const el = (tag: string, cls = "", text = "") => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text) e.textContent = text; // textContent only: file contents never become HTML
+    return e;
+  };
+  const say = (msg: string, isError = false) => {
+    status.textContent = msg;
+    status.classList.toggle("text-iron-ink", isError);
+  };
+
+  function render(res: Result) {
+    current = res;
+    results.hidden = false;
+    summary.textContent = summarise(res);
+    tbody.replaceChildren();
+    if (!res.issues.length) {
+      const tr = el("tr");
+      tr.append(el("td", "px-3 py-3", "—"), Object.assign(el("td", "px-3 py-3", "No issues found by the rule checks."), { colSpan: 3 }));
+      tbody.append(tr);
+    }
+    for (const i of res.issues) {
+      const tr = el("tr", "border-t border-line");
+      tr.dataset.line = String(i.line);
+      const sev = el("span", `font-mono text-xs uppercase ${i.severity === "error" ? "text-iron-ink font-semibold" : "text-ochre-ink"}`, i.severity);
+      const expl = el("td", "px-3 py-2");
+      expl.append(el("p", "", i.explanation));
+      tr.append(el("td", "px-3 py-2 font-mono tabular-nums", String(i.line)), el("td", "px-3 py-2 font-medium text-ink", `${i.issue} · ${i.hole}`), el("td", "px-3 py-2"), expl);
+      (tr.children[2] as HTMLElement).append(sev);
+      tbody.append(tr);
+    }
+  }
+
+  function renderReview(r: Review, truncated: boolean) {
+    ai.replaceChildren(el("p", "", r.summary));
+    for (const x of r.explanations) {
+      const cell = tbody.querySelector<HTMLElement>(`tr[data-line="${x.line}"] td:last-child`);
+      if (!cell) continue;
+      const p = el("p", "mt-1 text-slate-ink");
+      p.append(el("span", "font-mono text-[0.7rem] uppercase tracking-wider", "Claude: "), document.createTextNode(`${x.plain_english} Fix: ${x.likely_fix}`));
+      cell.append(p);
+    }
+    const h = el("h5", "mt-4 font-semibold text-ink", "Beyond the rules");
+    ai.append(h);
+    if (!r.extra_observations.length) ai.append(el("p", "text-muted", "Nothing else worth raising."));
+    else {
+      const ul = el("ul", "mt-2 grid gap-2 list-disc pl-5");
+      for (const o of r.extra_observations) {
+        ul.append(el("li", "", `${o.line ? `Line ${o.line}: ` : ""}${o.observation} ${o.why_it_matters} (confidence: ${o.confidence})`));
+      }
+      ai.append(ul);
+    }
+    if (truncated) ai.append(el("p", "mt-3 text-xs text-muted", "The AI review covered the first 600 rows; the rule checks covered all of them."));
+  }
+
+  async function run() {
+    const my = ++runId;
+    let res: Result;
+    try {
+      res = validate(normalise(records), Number(stdInput.value) || 20);
+    } catch (e) {
+      results.hidden = true;
+      say(e instanceof InputError ? e.message : "Couldn't read that file.", true);
+      return;
+    }
+    render(res);
+    say("Rule checks done. Asking Claude to explain them…");
+    ai.replaceChildren(el("p", "text-muted", "Waiting for Claude…"));
+    try {
+      const resp = await fetch("/api/validate", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ rows: records, standardEvery: Number(stdInput.value) || 20 }),
+      });
+      if (my !== runId) return;
+      const data = (await resp.json().catch(() => ({ error: "The server sent an unreadable reply." }))) as
+        { error?: string; review?: Review; truncated?: boolean; remaining?: number };
+      if (!resp.ok) {
+        ai.replaceChildren(el("p", "text-muted", data.error ?? "The AI review isn't available right now."));
+        say("Rule checks done. The AI review didn't run (see below).");
+        return;
+      }
+      if (!data.review) throw new Error("no review");
+      renderReview(data.review, !!data.truncated);
+      say(`Done. ${data.remaining} AI review${data.remaining === 1 ? "" : "s"} left this hour.`);
+    } catch {
+      if (my !== runId) return;
+      ai.replaceChildren(el("p", "text-muted", "Couldn't reach the server. The rule checks above still stand."));
+      say("Rule checks done. The AI review couldn't be reached.");
+    }
+  }
+
+  function loadCsv(text: string) {
+    const parsed = Papa.parse<RawRow>(text, { header: true, skipEmptyLines: "greedy", transform: (v) => v.trim() });
+    if (parsed.errors.length && !parsed.data.length) throw new InputError("That doesn't look like a CSV file.");
+    return parsed.data;
+  }
+
+  $("[data-load-sample]").addEventListener("click", async () => {
+    say("Loading the synthetic sample…");
+    const text = await (await fetch("/sample-drill-log.csv")).text();
+    fileName = "sample-drill-log";
+    records = loadCsv(text);
+    run();
+  });
+
+  $<HTMLInputElement>("[data-file]").addEventListener("change", async (ev) => {
+    const input = ev.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ""; // allow re-picking the same file
+    if (!file) return;
+    if (file.size > MAX) { say(`That file is ${(file.size / 1048576).toFixed(1)} MB; the limit is 2 MB.`, true); return; }
+    fileName = file.name.replace(/\.[^.]+$/, "");
+    try {
+      if (/\.xlsx$/i.test(file.name)) {
+        say("Reading spreadsheet…");
+        const XLSX = await import("xlsx"); // only fetched when someone uploads an .xlsx
+        const wb = XLSX.read(await file.arrayBuffer(), { type: "array" });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        records = XLSX.utils.sheet_to_json<RawRow>(sheet, { raw: false, defval: "" });
+      } else {
+        records = loadCsv(await file.text());
+      }
+    } catch (e) {
+      runId++;
+      results.hidden = true;
+      say(e instanceof InputError ? e.message : "Couldn't read that file. Is it a CSV or XLSX?", true);
+      return;
+    }
+    run();
+  });
+
+  stdInput.addEventListener("change", () => { if (records.length) run(); });
+
+  $("[data-download]").addEventListener("click", () => {
+    if (!current) return;
+    const byLine = new Map<number, { issues: string[]; sev: string }>();
+    for (const i of current.issues) {
+      const e = byLine.get(i.line) ?? { issues: [], sev: "warning" };
+      e.issues.push(i.issue);
+      if (i.severity === "error") e.sev = "error";
+      byLine.set(i.line, e);
+    }
+    const out = records.map((r, idx) => {
+      const f = byLine.get(idx + 2);
+      return { ...r, issues: f?.issues.join("; ") ?? "", severity: f?.sev ?? "" };
+    });
+    const blob = new Blob([Papa.unparse(out)], { type: "text/csv" });
+    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: `${fileName}-flagged.csv` });
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+</script>

@@ -1,13 +1,13 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import vercel from "@astrojs/vercel";
+import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
 
 // Static by default. Only the demo API routes (src/pages/api/*) opt out of
-// prerendering and run as Vercel serverless functions, so the API key stays server-side.
+// prerendering and run in the Cloudflare Worker, so the API key stays server-side.
 export default defineConfig({
   site: "https://sk1.au",
   output: "static",
-  adapter: vercel(),
+  adapter: cloudflare({ imageService: "passthrough" }),
   vite: { plugins: [tailwindcss()] },
 });

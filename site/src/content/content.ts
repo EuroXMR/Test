@@ -49,15 +49,16 @@ export interface Interval {
 
 // ---------------------------------------------------------------- identity
 export const identity = {
-  shortName: "Deo",
-  displayName: "Deo Puig", // hero; brief §6 format "DEO <surname>"
-  fullName: "Santiago Puig", // confirmed 2026-11-27; used in CV PDF + meta
+  // Confirmed 2026-11-27: his name is Santiago. ("Deo" in the original brief was wrong.)
+  shortName: "Santiago",
+  displayName: "Santiago Puig",
+  fullName: "Santiago Puig",
   location: "Perth, Western Australia",
   locationShort: "Perth, WA",
   workRights: "EU work rights · Open to relocation",
   // Forwarding address on sk1.au → Gmail (Cloudflare Email Routing). No LinkedIn: not used.
-  email: "deo@sk1.au",
-  emailNote: "[TODO: activate deo@sk1.au forwarding in Cloudflare before launch]",
+  email: "santiago@sk1.au",
+  emailNote: "[TODO: activate santiago@sk1.au forwarding in Cloudflare before launch]",
   languages: [
     "Spanish (native)",
     "English (fluent)",
@@ -106,7 +107,7 @@ export const field = {
       whatIDid:
         "Strip private data → AI checks for discrepancies and impossible values → errors are fixed before they reach the geologists.",
       result:
-        "1–2 errors per hole caught. More detail once the trial allows it. [TODO: confirm the 1–2 errors per hole and ~1 per 30 m figures can be published while the trial runs]",
+        "1–2 errors per hole caught. More detail once the trial allows it.",
       note: "Private data is removed before anything reaches an AI model: it only sees numbers and standard sample codes.",
       cta: { label: "Try a version of this →", href: "#demo-validator" },
     },
@@ -132,7 +133,7 @@ export const field = {
       problem: "[TODO: one-line problem statement for the AR concept]",
       whatIDid:
         "Hands-free logging through smart glasses, with an assistant that knows the project's procedures and documents.",
-      note: "[TODO: 3-frame storyboard / mock-up designed by Deo]",
+      note: "[TODO: 3-frame storyboard / mock-up designed by Santiago]",
     },
   ] satisfies CaseCard[],
 };
