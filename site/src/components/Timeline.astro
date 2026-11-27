@@ -1,0 +1,17 @@
+---
+import type { Role } from "../content/content";
+import T from "./T.astro";
+interface Props { roles: Role[] }
+const { roles } = Astro.props;
+---
+<ol class="relative border-l border-line ml-1.5">
+  {roles.map((r) => (
+    <li class="pl-6 pb-8 last:pb-0 relative">
+      <span aria-hidden="true" class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-basalt"></span>
+      <p class="font-mono text-xs text-muted"><T text={r.dates} /></p>
+      <h3 class="mt-1 font-semibold text-ink">{r.title}</h3>
+      <p class="text-[0.95rem]"><T text={r.org} /> · <T text={r.place} /></p>
+      {r.notes?.map((n) => <p class="mt-1 text-sm text-muted"><T text={n} /></p>)}
+    </li>
+  ))}
+</ol>

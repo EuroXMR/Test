@@ -47,7 +47,8 @@ export interface Interval {
 // ---------------------------------------------------------------- identity
 export const identity = {
   shortName: "Deo",
-  fullName: "Deo [TODO: surname]",
+  displayName: "Deo Puig", // hero; brief §6 format "DEO <surname>"
+  fullName: "Santiago Puig", // confirmed 2026-11-27; used in CV PDF + meta
   location: "Perth, Western Australia",
   locationShort: "Perth, WA",
   workRights: "EU work rights · Open to relocation",
@@ -55,8 +56,8 @@ export const identity = {
   linkedin: "[TODO: LinkedIn URL]",
   languages: [
     "Spanish (native)",
-    "English [TODO: level]",
-    "[TODO: other languages]",
+    "English (fluent)",
+    "Italian (A2)",
   ],
   countries: ["Spain", "Australia", "Norway", "South Korea", "Italy", "Malta", "Cyprus"],
 };
@@ -66,7 +67,7 @@ export const hero = {
   headline: "I bring AI into places nobody else is using it — and get people to adopt it.",
   subheadline:
     "Field operator, designer and founder. From diamond drilling rigs in Western Australia to offshore platforms in Norway and luxury design in Madrid.",
-  currently: "Currently: Geology Technician, Western Australia · Building with Claude",
+  currently: "Currently: Geology Technician, Western Australia · Building with Claude [TODO: confirm — CV shows the last contract (Lynas) finished 10/2026]",
   ctas: [
     { label: "Try the demos", href: "#demos" },
     { label: "Case studies", href: "#field" },
@@ -157,7 +158,7 @@ export const ventures = {
       role: "Founder",
       status: "[TODO: status]",
       proof:
-        "Has won cleaning contracts [TODO: number / scale]. A contract with the Australian Government is under negotiation.",
+        "Has won cleaning contracts [TODO: number / scale]. Pursuing an Australian Government contract [TODO: confirm which venture is bidding and the status label (tender in preparation / submitted / under negotiation)]",
     },
     {
       name: "Polar Vector Limited (UK)",
@@ -196,14 +197,71 @@ export const operations = {
     "Multidisciplinary crews",
     "Remote and harsh conditions",
   ],
-  // Most recent first.
+  // Most recent first. Source: Santiago's CV (2026-11-27) + brief §4.
+  // Mine site names are left out on purpose (brief §3.2: no site names).
   roles: [
     {
-      title: "Geology Technician / Diamond Drilling Offsider",
+      title: "Lead Geology Technician",
+      org: "Lynas Rare Earths (via Mining International People)",
+      place: "Western Australia · FIFO 8/6",
+      dates: "06/2026 – 10/2026 (contract finished early)",
+      notes: [
+        "Ran the RC grade control program on my own, without a Senior Geology Technician, coordinating daily with the geology team.",
+        "Managed the full sample chain of custody: pad preparation, sampling, registration, data entry, lab dispatch and follow-up.",
+        "Wrote practical procedures to reduce sampling errors.",
+      ],
+    },
+    {
+      title: "Geology Technician",
+      org: "Gold Fields (via Mining International People)",
+      place: "Western Australia · FIFO 8/6",
+      dates: "11/2025 – 06/2026",
+      notes: ["Core logging (marking, measuring, orienting, cutting, photographing), RC and DD sampling, lab dispatch in acQuire, pit operations."],
+    },
+    {
+      title: "Geology Technician, Exploration",
+      org: "Northern Star Resources (via Silverstone)",
+      place: "Northern Territory · FIFO 15/12",
+      dates: "06/2025 – 10/2025",
+      notes: ["RC and DD sample handling and dispatch, RQD and core tray preparation for geologist review."],
+    },
+    {
+      title: "Exploration Driller Offsider (diamond core)",
       org: "West Core Drilling",
-      place: "Western Australia · FIFO",
-      dates: "Apr 2025 – present [TODO: confirm dates]",
-      notes: ["Grade control drilling program."],
+      place: "Western Australia · FIFO 2/1",
+      dates: "04/2025 – 06/2025 [TODO: confirm — brief said Geology Technician / Offsider, Apr 2025 – present]",
+    },
+    {
+      title: "Recycling Auditor",
+      org: "[TODO: confirm employer name — CV says 'Government of Fremantle']",
+      place: "Perth, WA",
+      dates: "01/2025 – 04/2025",
+    },
+    {
+      title: "Drillers Offsider",
+      org: "Dart Mining (MSP contract)",
+      place: "Victoria · FIFO 2/1",
+      dates: "07/2024 – 01/2025",
+    },
+    {
+      title: "Industrial Inspector / QA Auditor",
+      org: "Verify Cargo",
+      place: "Remote, multinational · on call",
+      dates: "09/2022 – 12/2024",
+      notes: ["Cargo and container compliance audits; reports to stakeholders."],
+    },
+    {
+      title: "Offshore Deckhand & Junior Officer",
+      org: "M/Y Younan (33 m superyacht)",
+      place: "Savona, Italy",
+      dates: "01/2024 – 03/2024",
+    },
+    {
+      title: "Offshore Deckhand & Engineering Assistant",
+      org: "M/Y Tribu (55 m exploration yacht)",
+      place: "Savona, Italy · Europe",
+      dates: "08/2023 – 01/2024",
+      notes: ["Assisted the Chief Engineer with maintenance, troubleshooting and refits; rigging; bridge watch on international voyages."],
     },
     {
       title: "Junior Roughneck / Roustabout",
@@ -217,20 +275,26 @@ export const operations = {
       place: "Australia",
       dates: "[TODO: dates]",
     },
-    {
-      title: "Deckhand & Engineering Assistant",
-      org: "M/Y Tribu",
-      place: "[TODO: location]",
-      dates: "[TODO: dates]",
-    },
   ] satisfies Role[],
-  study: "Cert IV WHS units in progress: BSBWHS412, BSBWHS413, BSBWHS414.",
+  certifications: [
+    "OPITO BOSIET (+ advanced firefighting)",
+    "STCW 95 (2010) safety training · STCW cyber security risk",
+    "National High Risk Work Licence — forklift (TLILIC0003)",
+    "White Card (CPCCWHS2001)",
+    "Confined spaces (RIIWHS202E) · Work safely at heights (RIIWHS204E)",
+    "Remove non-friable asbestos (CPCCDE3014) · Demolition (CPCCCM2009)",
+    "First Aid + CPR · Oil & gas medical",
+    "RYA Powerboat Level 2 (2024)",
+    "WA driver licence + Heavy Rigid (L-plate)",
+  ],
+  software: "acQuire, Arena, Imago, MS Office",
+  study: "Certificate IV in Work Health and Safety (BSB41419) [TODO: confirm — CV lists it as held; brief says studying units BSBWHS412, 413, 414]",
 };
 
 // ---------------------------------------------------------------- 05 design
 export const design = {
   line: "Design is how I explain things: I make complex ideas visible.",
-  degree: "Degree in Visual Design, Madrid · [TODO: official institution name + year]",
+  degree: "Degree in Visual Design, Madrid · [TODO: official institution name + year] [TODO: confirm vs CV, which lists 'Sogang University, Technology Degree, 2018–2022']",
   exchange: "One year at Sogang University, Seoul, South Korea",
   balenciaga: "Design work with Balenciaga Madrid · [TODO: exact role, dates]",
   practice: "Art direction, photography, branding.",
@@ -257,7 +321,9 @@ export const built = {
 
 // ---------------------------------------------------------------- 08 learning
 export const learning = {
-  items: ["[TODO: confirm your 'Currently learning' list, e.g. Python fundamentals, the Claude API, data-centre / critical-facilities fundamentals]"],
+  items: [
+    "Geology BSc (Hons), enrolled [TODO: institution]",
+    "[TODO: confirm the rest of your 'Currently learning' list, e.g. Python fundamentals, the Claude API, data-centre / critical-facilities fundamentals]"],
 };
 
 // ---------------------------------------------------------------- EOH
@@ -274,5 +340,5 @@ export const cv = {
     "Remove all private information before data reaches an AI model; it sees only numbers and standard sample codes.",
     "Use AI vision as a second opinion on lithology from core. [TODO: details]",
   ],
-  education: [design.degree, design.exchange, "Cert IV WHS (in progress): BSBWHS412, BSBWHS413, BSBWHS414"],
+  education: [design.degree, design.exchange, operations.study, learning.items[0]],
 };

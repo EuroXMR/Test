@@ -1,24 +1,186 @@
 ---
-// Phase 1 placeholder: proves the content source, Tailwind and the build work.
-// The real sections arrive in Phase 2.
-import "../styles/global.css";
-import { identity, hero, intervals } from "../content/content";
+import Base from "../layouts/Base.astro";
+import T from "../components/T.astro";
+import IntervalHeader from "../components/IntervalHeader.astro";
+import CaseCard from "../components/CaseCard.astro";
+import VentureCard from "../components/VentureCard.astro";
+import Timeline from "../components/Timeline.astro";
+import Badge from "../components/Badge.astro";
+import { Content as BuildLog } from "../../BUILD_LOG.md";
+import {
+  identity, hero, intervals, field, demos, ventures, operations,
+  design, lab, built, learning, contact,
+} from "../content/content";
+
+const iv = Object.fromEntries(intervals.map((i) => [i.slug, i]));
+const section = "px-4 sm:px-8 py-20 sm:py-28 border-t border-line";
+const wrap = "mx-auto max-w-3xl";
+const isUrl = (s: string) => /^https?:\/\//.test(s);
 ---
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{identity.shortName} · living CV</title>
-    <meta name="robots" content="noindex" />
-  </head>
-  <body class="bg-stone-50 text-stone-900 font-sans px-4 py-12">
-    <main class="mx-auto max-w-2xl">
-      <p class="font-mono text-xs tracking-widest text-iron">PHASE 1 · SETUP CHECK</p>
-      <h1 class="mt-2 text-3xl font-semibold">{hero.headline}</h1>
-      <p class="mt-4 text-stone-600">{hero.subheadline}</p>
-      <ol class="mt-8 font-mono text-sm">
-        {intervals.map((i) => <li>INTERVAL {i.n} · {i.label.toUpperCase()}</li>)}
-      </ol>
-    </main>
-  </body>
-</html>
+<Base
+  title={`${identity.displayName} · AI in the field, ventures and live demos`}
+  description={hero.headline}
+>
+  <main id="main">
+    <!-- 0 m — Hero -->
+    <section class="px-4 sm:px-8 pt-20 pb-24 sm:pt-32 sm:pb-32" aria-labelledby="hero-title">
+      <div class={wrap}>
+        <p class="font-mono text-xs sm:text-sm tracking-[0.14em] uppercase text-muted">0.0 m · Collar</p>
+        <p class="mt-6 font-mono text-sm tracking-[0.2em] uppercase text-ink">{identity.displayName}</p>
+        <h1 id="hero-title" class="mt-4 text-4xl sm:text-6xl font-semibold tracking-tight leading-[1.05] text-ink text-balance">
+          {hero.headline}
+        </h1>
+        <p class="mt-6 text-lg sm:text-xl text-body max-w-2xl text-pretty">{hero.subheadline}</p>
+        <div class="mt-10 flex flex-wrap gap-3">
+          {hero.ctas.map((c, i) => (
+            <a href={c.href}
+               class={i === 0
+                 ? "inline-flex items-center px-5 py-3 rounded-md bg-ink text-paper font-medium hover:bg-body"
+                 : "inline-flex items-center px-5 py-3 rounded-md border border-ink text-ink font-medium hover:bg-paper-raised"}>
+              {c.label}
+            </a>
+          ))}
+        </div>
+        <p class="mt-10 text-sm text-muted"><T text={hero.currently} /></p>
+      </div>
+    </section>
+
+    <!-- 01 — AI in the field -->
+    <section id="field" class={section} aria-labelledby="field-title">
+      <div class={wrap}>
+        <IntervalHeader interval={iv.field}>Using AI on mining data, privately</IntervalHeader>
+        <p class="text-lg leading-relaxed max-w-2xl">{field.intro}</p>
+        <div class="mt-12 grid gap-12">
+          {field.cases.map((c, i) => <CaseCard card={c} letter={"ABCD"[i]} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 — Live demos -->
+    <section id="demos" class={section} aria-labelledby="demos-title">
+      <div class={wrap}>
+        <IntervalHeader interval={iv.demos}>Try it yourself, in 30 seconds</IntervalHeader>
+        <p role="note" class="font-mono text-xs sm:text-sm bg-paper-raised border border-line rounded px-3 py-2">{demos.banner}</p>
+        <div class="mt-10 grid gap-8 sm:grid-cols-2">
+          <article id="demo-validator" class="border border-line rounded-md p-5 bg-paper-raised">
+            <div class="flex justify-between gap-2"><h3 class="text-lg font-semibold text-ink">{demos.validator.title}</h3><Badge label="In development" /></div>
+            <p class="mt-3 text-[0.95rem] leading-relaxed">{demos.validator.blurb}</p>
+          </article>
+          <article id="demo-lithology" class="border border-line rounded-md p-5 bg-paper-raised">
+            <div class="flex justify-between gap-2"><h3 class="text-lg font-semibold text-ink">{demos.lithology.title}</h3><Badge label="In development" /></div>
+            <p class="mt-3 text-[0.95rem] leading-relaxed">{demos.lithology.blurb}</p>
+            <p class="mt-3 text-sm text-muted">{demos.lithology.disclaimer}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 — Ventures -->
+    <section id="ventures" class={section} aria-labelledby="ventures-title">
+      <div class={wrap}>
+        <IntervalHeader interval={iv.ventures}>Things I've started</IntervalHeader>
+        <p class="text-lg leading-relaxed">{ventures.intro}</p>
+        <div class="mt-10 grid gap-5 sm:grid-cols-2">
+          {ventures.items.map((v) => <VentureCard v={v} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — Field operations -->
+    <section id="operations" class={section} aria-labelledby="operations-title">
+      <div class={wrap}>
+        <IntervalHeader interval={iv.operations}>Where I've worked</IntervalHeader>
+        <p class="text-lg leading-relaxed border-l-4 border-basalt pl-4">{operations.callout}</p>
+        <div class="mt-12"><Timeline roles={operations.roles} /></div>
+        <div class="mt-14 grid gap-8 sm:grid-cols-2">
+          <div>
+            <h3 class="font-mono text-xs uppercase tracking-wider text-muted">Tickets & certifications</h3>
+            <ul class="mt-3 grid gap-1.5 text-[0.95rem]">{operations.certifications.map((c) => <li>{c}</li>)}</ul>
+          </div>
+          <div>
+            <h3 class="font-mono text-xs uppercase tracking-wider text-muted">Safety study</h3>
+            <p class="mt-3 text-[0.95rem]"><T text={operations.study} /></p>
+            <h3 class="mt-6 font-mono text-xs uppercase tracking-wider text-muted">Geology software</h3>
+            <p class="mt-3 text-[0.95rem]">{operations.software}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 — Design -->
+    <section id="design" class={section} aria-labelledby="design-title">
+      <div class={wrap}>
+        <IntervalHeader interval={iv.design}>Design background</IntervalHeader>
+        <p class="text-lg leading-relaxed">{design.line}</p>
+        <ul class="mt-8 grid gap-2 text-[0.95rem]">
+          <li><T text={design.degree} /></li>
+          <li>{design.exchange}</li>
+          <li><T text={design.balenciaga} /></li>
+          <li>{design.practice}</li>
+        </ul>
+        <p class="mt-6 text-sm text-muted"><span class="font-mono text-xs uppercase tracking-wider">Tools</span> · {design.tools.join(", ")}</p>
+        {design.gallery.length
+          ? <div class="mt-10 grid gap-4 sm:grid-cols-2">{design.gallery.map((g) => <figure><img src={g.src} alt={g.alt} loading="lazy" /><figcaption class="mt-2 text-sm text-muted">{g.caption}</figcaption></figure>)}</div>
+          : <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-3" aria-label="Portfolio placeholder">
+              {[1,2,3,4,5,6].map(() => <div class="aspect-[4/5] rounded bg-quartz/40 border border-dashed border-line"></div>)}
+              <p class="col-span-full"><T text={design.galleryTodo} /></p>
+            </div>}
+      </div>
+    </section>
+
+    <!-- 06 — Local AI lab -->
+    <section id="lab" class={section} aria-labelledby="lab-title">
+      <div class={wrap}>
+        <IntervalHeader interval={iv.lab}>Models on my own hardware</IntervalHeader>
+        <p class="text-lg leading-relaxed">{lab.intro}</p>
+        <dl class="mt-8 grid gap-4 text-[0.95rem]">
+          <div><dt class="font-mono text-xs uppercase tracking-wider text-muted">Models</dt><dd><T text={lab.models} /></dd></div>
+          <div><dt class="font-mono text-xs uppercase tracking-wider text-muted">Hardware</dt><dd><T text={lab.hardware} /></dd></div>
+          <div><dt class="font-mono text-xs uppercase tracking-wider text-muted">How I build</dt><dd>{lab.skills}</dd></div>
+        </dl>
+        <p class="mt-6"><T text={lab.photo} /></p>
+      </div>
+    </section>
+
+    <!-- 07 — How I built this -->
+    <section id="built" class={section} aria-labelledby="built-title">
+      <div class={wrap}>
+        <IntervalHeader interval={iv.built}>Directing Claude Code</IntervalHeader>
+        <p class="text-lg leading-relaxed">{built.intro}</p>
+        <details class="mt-8 border border-line rounded-md bg-paper-raised">
+          <summary class="cursor-pointer px-5 py-3 font-medium">Read the build log</summary>
+          <div class="buildlog px-5 pb-5 text-[0.95rem] leading-relaxed"><BuildLog /></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 08 — Currently learning -->
+    <section id="learning" class={section} aria-labelledby="learning-title">
+      <div class={wrap}>
+        <IntervalHeader interval={iv.learning}>What I'm learning now</IntervalHeader>
+        <ul class="grid gap-2 text-[0.95rem] list-disc pl-5">{learning.items.map((l) => <li><T text={l} /></li>)}</ul>
+      </div>
+    </section>
+
+    <!-- EOH — Contact -->
+    <footer id="contact" class="px-4 sm:px-8 py-20 sm:py-28 border-t-4 border-ink bg-ink text-paper" aria-labelledby="contact-title">
+      <div class={wrap}>
+        <p class="font-mono text-xs sm:text-sm tracking-[0.14em] uppercase text-quartz">EOH · Contact</p>
+        <h2 id="contact-title" class="mt-3 text-2xl sm:text-3xl font-semibold">Get in touch</h2>
+        <ul class="mt-8 grid gap-2 text-lg">
+          <li>Email: {!identity.email.startsWith("[")
+            ? <a class="underline underline-offset-4" href={`mailto:${identity.email}`}>{identity.email}</a>
+            : <T text={identity.email} />}</li>
+          <li>LinkedIn: {isUrl(identity.linkedin)
+            ? <a class="underline underline-offset-4" href={identity.linkedin}>{identity.linkedin}</a>
+            : <T text={identity.linkedin} />}</li>
+          <li><a class="underline underline-offset-4" href="/cv.pdf">Download CV (PDF)</a></li>
+        </ul>
+        <p class="mt-8">{identity.locationShort} · {identity.workRights}</p>
+        <p class="mt-2 text-quartz">Languages: {identity.languages.join(" · ")}</p>
+        <p class="mt-1 text-quartz">Lived, studied or worked in: {identity.countries.join(", ")}</p>
+        <p class="mt-14 font-mono text-xs tracking-[0.14em] uppercase text-quartz"><T text={contact.footer} /></p>
+      </div>
+    </footer>
+  </main>
+</Base>

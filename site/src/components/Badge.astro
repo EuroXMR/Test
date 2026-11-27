@@ -1,0 +1,9 @@
+---
+import T from "./T.astro";
+interface Props { label: string }
+const { label } = Astro.props;
+const isTodo = label.startsWith("[TODO");
+---
+{isTodo ? <T text={label} /> : (
+  <span class="inline-block font-mono text-[0.7rem] tracking-widest uppercase border border-current rounded px-1.5 py-0.5 text-muted">{label}</span>
+)}

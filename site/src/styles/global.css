@@ -1,21 +1,55 @@
 @import "tailwindcss";
 
-/* Rock-tone interval accents (muted). Final values picked in Phase 3. */
+/*
+ * Palette. Light (off-white) for Phase 2; the dark variant is designed in Phase 3
+ * before picking one (brief §5). "*-ink" variants are darkened accents that pass
+ * WCAG AA (4.5:1) as text on --color-paper.
+ */
 @theme {
+  --color-paper: #f6f4ef;
+  --color-paper-raised: #fbfaf7;
+  --color-ink: #1c1b19;
+  --color-body: #2e2c29;
+  --color-muted: #5f5b54;
+  --color-line: #d9d4ca;
+
   --color-iron: #9a4a32;
+  --color-iron-ink: #8a3f29;
   --color-basalt: #4a4d50;
-  --color-quartz: #e8e4dc;
+  --color-basalt-ink: #4a4d50;
+  --color-quartz: #d8d2c4;
+  --color-quartz-ink: #5f5b54;
   --color-ochre: #b08a4a;
+  --color-ochre-ink: #7a5a24;
   --color-slate: #4f6577;
+  --color-slate-ink: #445868;
+
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
-.todo {
-  background: #fff3b0;
-  color: #5a4500;
+/* Accent classes are built from data, so generate them explicitly. */
+@source inline("{text-,bg-}{iron,slate,ochre,basalt,quartz}{,-ink}");
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+:focus-visible { outline: 2px solid var(--color-iron-ink); outline-offset: 3px; }
+
+mark.todo {
+  background: #fff1a8;
+  color: #4a3800;
   font-family: var(--font-mono);
-  font-size: 0.85em;
-  padding: 0 0.25em;
+  font-size: 0.8em;
+  padding: 0.05em 0.3em;
   border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
+
+/* Build log rendered from BUILD_LOG.md */
+.buildlog h1 { display: none; }
+.buildlog h2 { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); margin-top: 1.25rem; }
+.buildlog p { margin-top: 0.75rem; }
+.buildlog ul { list-style: disc; padding-left: 1.25rem; margin-top: 0.75rem; display: grid; gap: 0.5rem; }
+.buildlog code { font-family: var(--font-mono); font-size: 0.85em; }

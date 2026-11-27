@@ -1,0 +1,14 @@
+---
+import type { Interval } from "../content/content";
+interface Props { interval: Interval; depth?: string }
+const { interval, depth } = Astro.props;
+---
+<header class="mb-10">
+  <p class={`font-mono text-xs sm:text-sm tracking-[0.14em] uppercase text-${interval.accent}-ink`}>
+    <span aria-hidden="true" class={`inline-block w-6 h-2 mr-2 align-middle rounded-sm bg-${interval.accent}`}></span>
+    Interval {interval.n}{depth && <> · {depth}</>} · {interval.label}
+  </p>
+  <h2 id={`${interval.slug}-title`} class="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight text-ink">
+    <slot />
+  </h2>
+</header>

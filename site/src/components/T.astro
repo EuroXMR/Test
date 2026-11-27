@@ -1,0 +1,8 @@
+---
+// Renders a content string, wrapping every "[TODO: …]" in a visible <mark>.
+// Use this for ALL content strings so no TODO can be hidden (brief §10).
+interface Props { text: string }
+const { text } = Astro.props;
+const parts = text.split(/(\[TODO:[^\]]*\])/g).filter(Boolean);
+---
+{parts.map((p) => (p.startsWith("[TODO:") ? <mark class="todo">{p}</mark> : p))}
