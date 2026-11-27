@@ -1,0 +1,24 @@
+---
+// Phase 1 placeholder: proves the content source, Tailwind and the build work.
+// The real sections arrive in Phase 2.
+import "../styles/global.css";
+import { identity, hero, intervals } from "../content/content";
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{identity.shortName} · living CV</title>
+    <meta name="robots" content="noindex" />
+  </head>
+  <body class="bg-stone-50 text-stone-900 font-sans px-4 py-12">
+    <main class="mx-auto max-w-2xl">
+      <p class="font-mono text-xs tracking-widest text-iron">PHASE 1 · SETUP CHECK</p>
+      <h1 class="mt-2 text-3xl font-semibold">{hero.headline}</h1>
+      <p class="mt-4 text-stone-600">{hero.subheadline}</p>
+      <ol class="mt-8 font-mono text-sm">
+        {intervals.map((i) => <li>INTERVAL {i.n} · {i.label.toUpperCase()}</li>)}
+      </ol>
+    </main>
+  </body>
+</html>

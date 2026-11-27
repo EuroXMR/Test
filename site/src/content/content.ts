@@ -1,0 +1,278 @@
+/**
+ * Single source of truth for every fact and every line of copy on the site
+ * and in the CV PDF. Rules (see CLAUDE.md §3–4):
+ *  - Only facts from the brief's fact sheet. Nothing invented.
+ *  - Anything unknown is a literal TODO-marker string (square brackets, "TODO:", text). Components render it
+ *    visibly, and `npm run todos` collects every one into TODO.md.
+ *  - No employer/client data, no addresses, phone or document numbers.
+ */
+
+export type Status = "Active" | "In development" | "Concept" | "Under negotiation" | "[TODO: status]";
+
+export interface CaseCard {
+  id: string;
+  title: string;
+  badge?: Status;
+  stat?: string;
+  problem: string;
+  whatIDid: string;
+  result?: string;
+  note?: string;
+  cta?: { label: string; href: string };
+}
+
+export interface Venture {
+  name: string;
+  whatItIs: string;
+  role: string;
+  status: Status;
+  proof: string;
+}
+
+export interface Role {
+  title: string;
+  org: string;
+  place: string;
+  dates: string;
+  notes?: string[];
+}
+
+export interface Interval {
+  n: string; // "01"
+  slug: string;
+  label: string;
+  accent: "iron" | "basalt" | "quartz" | "ochre" | "slate";
+}
+
+// ---------------------------------------------------------------- identity
+export const identity = {
+  shortName: "Deo",
+  fullName: "Deo [TODO: surname]",
+  location: "Perth, Western Australia",
+  locationShort: "Perth, WA",
+  workRights: "EU work rights · Open to relocation",
+  email: "[TODO: email]",
+  linkedin: "[TODO: LinkedIn URL]",
+  languages: [
+    "Spanish (native)",
+    "English [TODO: level]",
+    "[TODO: other languages]",
+  ],
+  countries: ["Spain", "Australia", "Norway", "South Korea", "Italy", "Malta", "Cyprus"],
+};
+
+// ---------------------------------------------------------------- hero
+export const hero = {
+  headline: "I bring AI into places nobody else is using it — and get people to adopt it.",
+  subheadline:
+    "Field operator, designer and founder. From diamond drilling rigs in Western Australia to offshore platforms in Norway and luxury design in Madrid.",
+  currently: "Currently: Geology Technician, Western Australia · Building with Claude",
+  ctas: [
+    { label: "Try the demos", href: "#demos" },
+    { label: "Case studies", href: "#field" },
+    { label: "Download CV (PDF)", href: "/cv.pdf" },
+  ],
+};
+
+// ---------------------------------------------------------------- intervals
+// Depth ranges are assigned in Phase 3 once section heights are known.
+export const intervals: Interval[] = [
+  { n: "01", slug: "field", label: "AI in the field", accent: "iron" },
+  { n: "02", slug: "demos", label: "Live demos", accent: "slate" },
+  { n: "03", slug: "ventures", label: "Ventures", accent: "ochre" },
+  { n: "04", slug: "operations", label: "Field operations", accent: "basalt" },
+  { n: "05", slug: "design", label: "Design", accent: "quartz" },
+  { n: "06", slug: "lab", label: "Local AI lab", accent: "slate" },
+  { n: "07", slug: "built", label: "How I built this site", accent: "basalt" },
+  { n: "08", slug: "learning", label: "Currently learning", accent: "ochre" },
+];
+
+// ---------------------------------------------------------------- 01 AI in the field
+export const field = {
+  intro:
+    "Mining runs on spreadsheets typed by hand at the end of long shifts. I started using AI to check our own data, and it now catches errors that used to slip through.",
+  cases: [
+    {
+      id: "validation",
+      title: "Drilling data validation",
+      stat: "~1 error every 30 m",
+      problem: "Manual data entry of metres and depths in a grade control program.",
+      whatIDid:
+        "Strip private data → AI checks for discrepancies and impossible values → errors are fixed before they reach the geologists.",
+      result:
+        "1–2 errors per hole caught. [TODO: holes per program or per week, to show total scale] [TODO: one anonymised example of a typical error]",
+      note: "Private data is removed before anything reaches an AI model: it only sees numbers and standard sample codes.",
+      cta: { label: "Try a version of this →", href: "#demo-validator" },
+    },
+    {
+      id: "dispatch",
+      title: "Lab dispatch lists",
+      problem: "Dispatch lists to the lab are built by hand, with the same error risk.",
+      whatIDid:
+        "[TODO: confirm the check, e.g. cross-checking sample codes against the drilling log before dispatch]",
+    },
+    {
+      id: "lithology",
+      title: "Lithology identification",
+      problem: "Identifying lithology from core.",
+      whatIDid:
+        "AI vision as a second pair of eyes on core. [TODO: how it's used alongside the geologist; any accuracy observations]",
+      cta: { label: "Try it →", href: "#demo-lithology" },
+    },
+    {
+      id: "ar",
+      title: "AR core logging",
+      badge: "Concept",
+      problem: "[TODO: one-line problem statement for the AR concept]",
+      whatIDid:
+        "Hands-free logging through smart glasses, with an assistant that knows the project's procedures and documents.",
+      note: "[TODO: 3-frame storyboard / mock-up designed by Deo]",
+    },
+  ] satisfies CaseCard[],
+};
+
+// ---------------------------------------------------------------- 02 demos
+export const demos = {
+  banner: "Demo with synthetic data. Don't upload confidential company data.",
+  validator: {
+    title: "Drill log validator",
+    blurb:
+      "Rules where rules work, AI where judgment helps: deterministic checks run in code first, then Claude explains the findings in plain language and flags anything unusual the rules missed.",
+  },
+  lithology: {
+    title: "Lithology helper",
+    blurb:
+      "Upload a core photo or pick a public sample image. Claude returns the likely lithology, the visual features it relied on and a confidence level.",
+    disclaimer: "An assistant, not a geologist. Always verified by a qualified person.",
+  },
+};
+
+// ---------------------------------------------------------------- 03 ventures
+export const ventures = {
+  intro: "I start things and get people to sign. Some of what I've built:",
+  items: [
+    {
+      name: "MEPA",
+      whatItIs: "Non-governmental organisation. [TODO: one-line mission of MEPA]",
+      role: "Founder",
+      status: "[TODO: status]",
+      proof:
+        "Has won cleaning contracts [TODO: number / scale]. A contract with the Australian Government is under negotiation.",
+    },
+    {
+      name: "Polar Vector Limited (UK)",
+      whatItIs: "Cybersecurity company. [TODO: what it does / clients]",
+      role: "Director and owner",
+      status: "[TODO: status]",
+      proof:
+        "Incorporated ~2024 [TODO: exact date + company number]. Related project: PolarVector platform, a situational-awareness / risk-analysis tool (anomaly detection, entity relationships, compliance signals) [TODO: current status].",
+    },
+    {
+      name: "Saint & Saint Studio (Cyprus)",
+      whatItIs: "Real-estate project in Cyprus.",
+      role: "Director",
+      status: "[TODO: status]",
+      proof: "[TODO: one proof point]",
+    },
+    {
+      name: "Perth web studio",
+      whatItIs:
+        "Websites for local businesses: I find them, build their sites with Claude Code and sell them in person.",
+      role: "Sole trader",
+      status: "Active",
+      proof: "[TODO: number of sites sold / one example]",
+    },
+  ] satisfies Venture[],
+};
+
+// ---------------------------------------------------------------- 04 field operations
+export const operations = {
+  callout:
+    "Safety-critical environments: offshore oil & gas, supply vessels, diamond drilling. Studying Cert IV WHS.",
+  themes: [
+    "Safety-critical operations",
+    "Strict procedures",
+    "Heavy equipment",
+    "Multidisciplinary crews",
+    "Remote and harsh conditions",
+  ],
+  // Most recent first.
+  roles: [
+    {
+      title: "Geology Technician / Diamond Drilling Offsider",
+      org: "West Core Drilling",
+      place: "Western Australia · FIFO",
+      dates: "Apr 2025 – present [TODO: confirm dates]",
+      notes: ["Grade control drilling program."],
+    },
+    {
+      title: "Junior Roughneck / Roustabout",
+      org: "Goliat oil platform · [TODO: employer]",
+      place: "Norway",
+      dates: "[TODO: dates]",
+    },
+    {
+      title: "Deckhand",
+      org: "Offshore supply vessel Outer Limit",
+      place: "Australia",
+      dates: "[TODO: dates]",
+    },
+    {
+      title: "Deckhand & Engineering Assistant",
+      org: "M/Y Tribu",
+      place: "[TODO: location]",
+      dates: "[TODO: dates]",
+    },
+  ] satisfies Role[],
+  study: "Cert IV WHS units in progress: BSBWHS412, BSBWHS413, BSBWHS414.",
+};
+
+// ---------------------------------------------------------------- 05 design
+export const design = {
+  line: "Design is how I explain things: I make complex ideas visible.",
+  degree: "Degree in Visual Design, Madrid · [TODO: official institution name + year]",
+  exchange: "One year at Sogang University, Seoul, South Korea",
+  balenciaga: "Design work with Balenciaga Madrid · [TODO: exact role, dates]",
+  practice: "Art direction, photography, branding.",
+  tools: ["Unreal Engine", "Twinmotion", "SketchUp", "3ds Max", "Adobe Dimension", "Autodesk Alias", "AutoCAD"],
+  gallery: [] as { src: string; alt: string; caption: string }[],
+  galleryTodo: "[TODO: 4–6 portfolio images + captions]",
+};
+
+// ---------------------------------------------------------------- 06 local AI lab
+export const lab = {
+  intro: "I run local LLMs on my own hardware.",
+  models: "Qwen and DeepSeek models [TODO: confirm models and setup]",
+  hardware: "Several GPUs, including an AMD RX 9070 build, NVIDIA Quadro and GTX 970 [TODO: confirm exact list]",
+  photo: "[TODO: photo of the hardware setup]",
+  skills: "Self-taught: Python scripting, APIs, automation, AI-assisted development with Claude Code.",
+  // Security investigation (smart projector) is deliberately NOT shown until written up (brief §4).
+};
+
+// ---------------------------------------------------------------- 07 how I built this
+export const built = {
+  intro:
+    "I directed Claude Code to build this site from a written brief. The build log below records the key decisions, what broke and how it was fixed, and why the demos are privacy-first.",
+};
+
+// ---------------------------------------------------------------- 08 learning
+export const learning = {
+  items: ["[TODO: confirm your 'Currently learning' list, e.g. Python fundamentals, the Claude API, data-centre / critical-facilities fundamentals]"],
+};
+
+// ---------------------------------------------------------------- EOH
+export const contact = {
+  footer: "END OF HOLE (EOH) · total depth [TODO: n] m",
+};
+
+// ---------------------------------------------------------------- CV PDF (same source)
+export const cv = {
+  summary:
+    "Field operator, designer and founder who brings AI into places nobody else is using it — and gets people to adopt it. [TODO: confirm 2-line CV summary]",
+  aiBullets: [
+    "Use AI to validate hand-entered drilling data in a grade control program; catches 1–2 errors per hole, roughly 1 every 30 m drilled.",
+    "Remove all private information before data reaches an AI model; it sees only numbers and standard sample codes.",
+    "Use AI vision as a second opinion on lithology from core. [TODO: details]",
+  ],
+  education: [design.degree, design.exchange, "Cert IV WHS (in progress): BSBWHS412, BSBWHS413, BSBWHS414"],
+};
