@@ -13,8 +13,9 @@ function rng(seed: number) {
 }
 
 /** Unrolled core surface: x = around the circumference, y = along the hole. */
-function makeTextures() {
-  const W = 512, H = 2048;
+function makeTextures(small: boolean) {
+  // Smaller texture on phones: the core is ~90 px tall there anyway.
+  const W = small ? 256 : 512, H = small ? 1024 : 2048;
   const c = document.createElement("canvas");
   c.width = W; c.height = H;
   const g = c.getContext("2d")!;
@@ -38,16 +39,18 @@ function makeTextures() {
     g.closePath();
     g.fill();
   }
-  // Grain: thousands of small light/dark specks, also written to the bump map.
-  for (let i = 0; i < 26000; i++) {
-    const px = rand() * W, py = rand() * H, s = rand() * 2.2 + 0.4;
-    const light = rand() > 0.5;
-    const a = rand() * 0.22;
-    g.fillStyle = light ? `rgba(255,250,240,${a})` : `rgba(10,10,10,${a})`;
-    g.fillRect(px, py, s, s);
-    gb.fillStyle = light ? `rgba(255,255,255,${a * 2})` : `rgba(0,0,0,${a * 2})`;
-    gb.fillRect(px, py, s, s);
+  // Grain: one pass over the pixels (fast even on phones), with occasional
+  // brighter or darker specks. The bump map gets the same grain.
+  const img = g.getImageData(0, 0, W, H), bimg = gb.getImageData(0, 0, W, H);
+  const px = img.data, bp = bimg.data;
+  for (let i = 0; i < px.length; i += 4) {
+    const r = rand();
+    const n = r > 0.985 ? 55 : r < 0.015 ? -55 : (r - 0.5) * 26;
+    px[i] += n; px[i + 1] += n; px[i + 2] += n;
+    bp[i] = bp[i + 1] = bp[i + 2] = 128 + n * 1.6;
   }
+  g.putImageData(img, 0, 0);
+  gb.putImageData(bimg, 0, 0);
   // Veins: a plane cutting a cylinder unrolls to a sine wave.
   for (let k = 0; k < 7; k++) {
     const y0 = rand() * H, amp = 8 + rand() * 35, phase = rand() * Math.PI * 2;
@@ -65,8 +68,10 @@ function makeTextures() {
   map.colorSpace = SRGBColorSpace;
   map.wrapS = RepeatWrapping;
   map.anisotropy = 4;
+  map.flipY = false;
   const bump = new CanvasTexture(b);
   bump.wrapS = RepeatWrapping;
+  bump.flipY = false;
   return { map, bump };
 }
 
@@ -74,7 +79,8 @@ export function mountCore(root: HTMLElement) {
   const canvas = root.querySelector("canvas")!;
   const svg = root.querySelector("svg");
   const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const small = root.clientWidth < 640;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, small ? 1.5 : 2));
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(22, 4, 0.1, 100);
@@ -89,7 +95,10 @@ export function mountCore(root: HTMLElement) {
   rim.position.set(5, -2, -4);
   scene.add(rim);
 
-  const { map, bump } = makeTextures();
+  const { map, bump } = makeTextures(small);
+  // One material for every piece: each piece shows its own slice through UVs,
+  // so the texture is uploaded to the GPU once.
+  const mat = new MeshStandardMaterial({ map, bumpMap: bump, bumpScale: 1.4, roughness: 0.82, metalness: 0 });
   const LEN = 10.5, RADIUS = 0.62, GAP = 0.07;
   const outer = new Group();
   outer.rotation.z = Math.PI / 2; // lie the core down, like in a core tray
@@ -101,14 +110,11 @@ export function mountCore(root: HTMLElement) {
   for (let i = 0; i < cuts.length - 1; i++) {
     const a = cuts[i] / TOTAL_DEPTH, b = cuts[i + 1] / TOTAL_DEPTH;
     const h = (b - a) * LEN - GAP;
-    const geo = new CylinderGeometry(RADIUS, RADIUS, h, 64, 1);
+    const geo = new CylinderGeometry(RADIUS, RADIUS, h, 40, 1);
     // Remap V so each piece shows its own slice of the hole.
     const uv = geo.attributes.uv;
     for (let k = 0; k < uv.count; k++) uv.setY(k, a + (1 - uv.getY(k)) * (b - a));
     uv.needsUpdate = true;
-    const m = map.clone(); m.flipY = false; m.needsUpdate = true;
-    const bm = bump.clone(); bm.flipY = false; bm.needsUpdate = true;
-    const mat = new MeshStandardMaterial({ map: m, bumpMap: bm, bumpScale: 1.4, roughness: 0.82, metalness: 0 });
     const mesh = new Mesh(geo, mat);
     // Depth 0 at the left: cylinder +y points left after the z-rotation.
     mesh.position.y = LEN / 2 - (a + b) / 2 * LEN;
@@ -131,11 +137,15 @@ export function mountCore(root: HTMLElement) {
   resize();
 
   let visible = true, last = performance.now(), raf = 0;
+  // ~30 fps is plenty for a turn every ~35 s, and halves the work.
+  const FRAME_MS = 1000 / 30;
   const frame = (t: number) => {
-    const dt = Math.min((t - last) / 1000, 0.1);
-    last = t;
-    spin.rotation.y += dt * 0.18; // slow: one turn every ~35 s
-    renderer.render(scene, camera);
+    if (t - last >= FRAME_MS) {
+      const dt = Math.min((t - last) / 1000, 0.1);
+      last = t;
+      spin.rotation.y += dt * 0.18;
+      renderer.render(scene, camera);
+    }
     raf = visible && !document.hidden ? requestAnimationFrame(frame) : 0;
   };
   const start = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } };

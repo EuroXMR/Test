@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run todos && npm run credits && astro build",
+    "build": "npm run todos && npm run credits && npm run privacy && astro build && node scripts/render.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "todos": "node scripts/todos.ts",
     "types": "wrangler types --include-runtime=false",
     "sample": "node scripts/make-sample.ts",
     "test": "node scripts/test-rules.ts",
-    "credits": "node scripts/credits.ts"
+    "credits": "node scripts/credits.ts",
+    "privacy": "node scripts/privacy-check.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.14.0",
@@ -33,6 +34,7 @@
     "@types/node": "^22.20.7",
     "@types/papaparse": "^5.5.2",
     "@types/three": "^0.187.0",
+    "playwright": "^1.63.0",
     "typescript": "^6.0.3",
     "wrangler": "^4.168.0"
   },

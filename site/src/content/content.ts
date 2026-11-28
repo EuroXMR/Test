@@ -28,6 +28,8 @@ export interface Venture {
   status: Status;
   proof: string;
   link?: { label: string; href: string };
+  /** Short form for the one-page CV. Same facts, fewer words. */
+  cvLine: string;
 }
 
 export interface Role {
@@ -69,6 +71,8 @@ export const identity = {
 
 // ---------------------------------------------------------------- hero
 export const hero = {
+  metaDescription:
+    "Geology technician and founder in Perth, WA, bringing AI into mining and marine monitoring. Case studies and two live demos built with Claude.",
   headline: "I bring AI into places nobody else is using it — and get people to adopt it.",
   subheadline:
     "Field operator, designer and founder. From diamond drilling rigs in Western Australia to offshore platforms in Norway and luxury design in Madrid.",
@@ -164,6 +168,7 @@ export const ventures = {
       whatItIs:
         "Mediterranean Environmental Protection Agency: an independent not-for-profit in Perth (incorporated association, WA). It's building a system that uses satellite radar, ship tracking and AI-assisted screening to find marine pollution and illegal fishing, then hands verified evidence to the authorities who can act.",
       role: "Founder · Director and Principal Investigator",
+      cvLine: "Independent not-for-profit (WA) building satellite- and AI-assisted monitoring of marine pollution and illegal fishing. Cyprus radar pilot under way since Oct 2026; bidding on an Australian Government marine-parks tender.",
       status: "Pilot under way",
       proof:
         "Radar screening of the shipping lanes south of Cyprus, with an analyst reviewing every strong detection, under way since October 2026. Bidding on an Australian Government tender for technology to monitor compliance in marine parks [TODO: confirm tender status: in preparation or submitted]. [TODO: brief said MEPA 'has won cleaning contracts' — confirm number/scale, or drop]",
@@ -175,6 +180,7 @@ export const ventures = {
       whatItIs:
         "Investigative intelligence for companies, people, vessels and events: connecting maritime, corporate, sanctions and open-source data into one entity graph, with on-the-ground verification when the record isn't enough. Also does security testing.",
       role: "Founder and director",
+      cvLine: "Investigative intelligence on companies, people and vessels from maritime, corporate and sanctions data. PolarVector Limited, England and Wales, 2024.",
       status: "Active",
       proof:
         "PolarVector Limited, registered in England and Wales on 2 April 2024 (company no. 15608431). Investigations partner to MEPA for vessel, ownership and sanctions research. [TODO: clients or engagements you can mention]",
@@ -184,6 +190,7 @@ export const ventures = {
       name: "Saint & Saint Studio (Cyprus)",
       whatItIs: "Real-estate project in Cyprus.",
       role: "Director",
+      cvLine: "Real-estate project in Cyprus (hermesvillas.com).",
       status: "Active",
       proof: "[TODO: one proof point, e.g. units, stage or sales]",
       link: { label: "Project site: hermesvillas.com", href: "https://hermesvillas.com" },
@@ -193,6 +200,7 @@ export const ventures = {
       whatItIs:
         "Websites for local businesses: I find them, build their sites with Claude Code and sell them in person.",
       role: "Sole trader",
+      cvLine: "I find local businesses, build their sites with Claude Code and sell them in person.",
       status: "Active",
       proof: "[TODO: number of sites sold / one example]",
     },

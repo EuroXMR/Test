@@ -15,13 +15,22 @@ import CoreSVG from "./CoreSVG.astro";
   const hasGL = () => {
     try { return !!document.createElement("canvas").getContext("webgl2"); } catch { return false; }
   };
+  // The static core is already on screen; the 3D version is an enhancement,
+  // so it waits until the page has loaded and the browser is idle.
+  const whenIdle = (fn: () => void) =>
+    "requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2500 }) : setTimeout(fn, 200);
+  const afterLoad = (fn: () => void) =>
+    document.readyState === "complete" ? whenIdle(fn) : addEventListener("load", () => whenIdle(fn), { once: true });
+
   if (root && !reduce.matches && hasGL()) {
-    const io = new IntersectionObserver(async (entries) => {
-      if (!entries.some((e) => e.isIntersecting)) return;
-      io.disconnect();
-      const { mountCore } = await import("../lib/core3d");
-      mountCore(root);
-    }, { rootMargin: "200px" });
-    io.observe(root);
+    afterLoad(() => {
+      const io = new IntersectionObserver(async (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        const { mountCore } = await import("../lib/core3d");
+        mountCore(root);
+      }, { rootMargin: "200px" });
+      io.observe(root);
+    });
   }
 </script>

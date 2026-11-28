@@ -1,0 +1,14 @@
+---
+// Latin-only, self-hosted fonts. The Fontsource CSS declares every subset
+// (Cyrillic, Greek, Vietnamese…); this site only needs Latin, so it declares
+// just those three files and preloads the body font.
+import inter from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import mono400 from "@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2?url";
+import mono600 from "@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2?url";
+const css = `
+@font-face{font-family:"Inter Variable";font-style:normal;font-display:swap;font-weight:100 900;src:url(${inter}) format("woff2-variations")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-display:swap;font-weight:400;src:url(${mono400}) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-display:swap;font-weight:600;src:url(${mono600}) format("woff2")}`;
+---
+<link rel="preload" href={inter} as="font" type="font/woff2" crossorigin />
+<style is:inline set:html={css}></style>

@@ -10,4 +10,6 @@ export default defineConfig({
   output: "static",
   adapter: cloudflare({ imageService: "passthrough" }),
   vite: { plugins: [tailwindcss()] },
+  // One small stylesheet: inline it so first paint needs no extra request.
+  build: { inlineStylesheets: "always" },
 });

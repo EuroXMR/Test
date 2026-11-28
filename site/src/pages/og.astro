@@ -1,0 +1,20 @@
+---
+// 1200×630 social preview, screenshotted to /og.png at build. Not linked anywhere.
+import "../styles/global.css";
+import Fonts from "../components/Fonts.astro";
+import Core3D from "../components/Core3D.astro";
+import { identity, hero } from "../content/content";
+---
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" />
+    <Fonts /><meta name="robots" content="noindex" /><title>og</title></head>
+  <body class="m-0 bg-paper">
+    <div id="og" class="w-[1200px] h-[630px] flex flex-col justify-center px-20 bg-paper text-ink font-sans">
+      <p class="font-mono text-lg tracking-[0.2em] uppercase text-muted">{identity.fullName} · {identity.locationShort}</p>
+      <h1 class="mt-4 text-[54px] leading-[1.08] font-semibold tracking-tight max-w-[1000px]">{hero.headline}</h1>
+      <div class="mt-8 w-[1040px]"><Core3D /></div>
+      <p class="mt-4 font-mono text-base text-muted">sk1.au · live demos with Claude</p>
+    </div>
+  </body>
+</html>

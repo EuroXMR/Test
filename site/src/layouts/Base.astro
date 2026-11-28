@@ -1,21 +1,42 @@
 ---
-import "@fontsource-variable/inter";
-import "@fontsource/jetbrains-mono/400.css";
-import "@fontsource/jetbrains-mono/600.css";
+import Fonts from "../components/Fonts.astro";
 import "../styles/global.css";
+import { identity } from "../content/content";
 interface Props { title: string; description: string }
 const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/og.png", Astro.site).href;
+// Stays out of search engines until launch: build with PUBLIC_INDEXABLE=true.
+const indexable = import.meta.env.PUBLIC_INDEXABLE === "true";
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <Fonts />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <!-- Not indexed until TODOs are filled and Phase 6 SEO pass is done. -->
-    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={indexable ? "index, follow" : "noindex"} />
+    <meta name="author" content={identity.fullName} />
     <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f6f4ef" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={identity.fullName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${identity.fullName}: a banded drill core under the headline`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org", "@type": "Person", name: identity.fullName, url: Astro.site?.href,
+      address: { "@type": "PostalAddress", addressLocality: "Perth", addressRegion: "WA", addressCountry: "AU" },
+    })} />
   </head>
   <body class="bg-paper text-body font-sans antialiased">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-ink focus:text-paper focus:px-3 focus:py-2 focus:rounded">Skip to content</a>

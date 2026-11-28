@@ -1,0 +1,89 @@
+---
+// One-page CV, rendered from the same content as the site (brief §8).
+// `npm run build` prints this page to /cv.pdf with Playwright.
+// Single column, real text, no images: friendly to applicant-tracking systems.
+import "../styles/global.css";
+import Fonts from "../components/Fonts.astro";
+import T from "../components/T.astro";
+import { identity, cv, operations, ventures, design } from "../content/content";
+
+const mining = operations.roles.filter((r) => /Geology|Driller/.test(r.title));
+const maritime = operations.roles.filter((r) => /Deckhand|Roughneck|Officer/.test(r.title));
+const other = operations.roles.filter((r) => !mining.includes(r) && !maritime.includes(r));
+const lead = mining[0];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <Fonts />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{identity.fullName} · CV</title>
+    <meta name="description" content={`CV of ${identity.fullName}, ${identity.location}.`} />
+    <meta name="robots" content="noindex" />
+    <style is:global>
+      @page { size: A4; margin: 11mm 13mm; }
+      html { background: #fff; }
+      body.cv { font-size: 8.7pt; line-height: 1.38; color: #1c1b19; }
+      .cv h2 { font-family: var(--font-mono); font-size: 7.4pt; letter-spacing: 0.12em; text-transform: uppercase; color: #8a3f29; margin: 9pt 0 3pt; padding-bottom: 1.5pt; border-bottom: 0.6pt solid #d9d4ca; }
+      .cv ul { padding-left: 11pt; list-style: disc; }
+      .cv li + li { margin-top: 1.2pt; }
+      .cv .role { display: flex; justify-content: space-between; gap: 8pt; }
+      .cv .dates { font-family: var(--font-mono); font-size: 7.4pt; color: #5f5b54; white-space: nowrap; }
+      .cv mark.todo { font-size: 0.85em; }
+      @media screen { body.cv { max-width: 210mm; margin: 0 auto; padding: 12mm 13mm; } }
+    </style>
+  </head>
+  <body class="cv font-sans">
+    <header class="flex flex-wrap items-end justify-between gap-2">
+      <div>
+        <h1 class="text-[18pt] font-semibold tracking-tight leading-none">{identity.fullName}</h1>
+        <p class="mt-1.5 text-[9.5pt]">{identity.location} · {identity.workRights}</p>
+      </div>
+      <p class="text-right text-[8.5pt] leading-snug">
+        <a href={`mailto:${identity.email}`}>{identity.email}</a><br />
+        <a href="https://sk1.au">sk1.au</a> · live demos and case studies
+      </p>
+    </header>
+
+    <h2>Summary</h2>
+    <p><T text={cv.summary} /></p>
+
+    <h2>AI in the field</h2>
+    <ul>{cv.aiBullets.map((b) => <li><T text={b} /></li>)}</ul>
+
+    <h2>Experience · mining (Western Australia and beyond)</h2>
+    <div class="role"><p><strong>{lead.title}</strong>, <T text={lead.org} /> · <T text={lead.place} /></p><p class="dates"><T text={lead.dates} /></p></div>
+    <ul>{lead.notes?.map((n) => <li><T text={n} /></li>)}</ul>
+    {mining.slice(1).map((r) => (
+      <div class="role mt-1"><p><strong>{r.title}</strong>, <T text={r.org} /> · <T text={r.place} /></p><p class="dates"><T text={r.dates} /></p></div>
+    ))}
+
+    <h2>Experience · offshore and maritime</h2>
+    {maritime.map((r) => (
+      <div class="role"><p><strong>{r.title}</strong>, <T text={r.org} /> · <T text={r.place} /></p><p class="dates"><T text={r.dates} /></p></div>
+    ))}
+
+    <h2>Experience · other</h2>
+    {other.map((r) => (
+      <div class="role"><p><strong>{r.title}</strong>, <T text={r.org} /> · <T text={r.place} /></p><p class="dates"><T text={r.dates} /></p></div>
+    ))}
+
+    <h2>Ventures</h2>
+    <ul>
+      {ventures.items.map((v) => (
+        <li><strong>{v.name}</strong> ({v.role.split(" · ")[0]}): <T text={v.cvLine} /></li>
+      ))}
+    </ul>
+
+    <h2>Education and certification</h2>
+    <ul>{cv.education.map((e) => <li><T text={e} /></li>)}</ul>
+    <p class="mt-1"><span class="font-medium">Tickets:</span> {operations.certifications.join(" · ")}</p>
+
+    <h2>Skills, tools and languages</h2>
+    <p><span class="font-medium">AI and automation:</span> Claude and Claude Code (AI-assisted development), Python scripting, APIs, local LLMs on own hardware.</p>
+    <p><span class="font-medium">Geology software:</span> {operations.software}.</p>
+    <p><span class="font-medium">Design:</span> {design.tools.join(", ")}.</p>
+    <p><span class="font-medium">Languages:</span> {identity.languages.join(" · ")}. Lived, studied or worked in {identity.countries.join(", ")}.</p>
+  </body>
+</html>

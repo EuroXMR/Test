@@ -4,6 +4,11 @@
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
+  // Attach the personal domain on deploy (zone must already be active in Cloudflare).
+  "routes": [
+    { "pattern": "sk1.au", "custom_domain": true },
+    { "pattern": "www.sk1.au", "custom_domain": true }
+  ],
   // Hourly per-IP counters for the demo endpoints. Provisioned on first deploy.
   "kv_namespaces": [{ "binding": "RATE_LIMIT" }],
   "vars": {

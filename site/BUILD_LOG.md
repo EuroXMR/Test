@@ -73,3 +73,14 @@ Short entries: date · decision · what went wrong · fix. This file becomes the
 - **Went wrong:** Wikimedia Commons rate-limited this build machine's shared IP (HTTP 429), and only served thumbnails at its standard sizes. **Fix:** used the standard 960 px and 1280 px thumbnails and spaced out requests. The granite photo never got through, so it was dropped rather than replaced with an unverified image.
 - **Went wrong:** alt text written before seeing two of the photos was inaccurate ("dark green" core was grey-green). **Fix:** every image was checked by eye and its alt text rewritten from what's actually in it.
 - **Not yet tested against Claude:** no API key in the build environment. The result card was checked with a hand-written stub reply (layout only, clearly marked in the test).
+
+## 2026-11-28 · Phase 6 — CV PDF, SEO, performance, privacy
+
+- **Decision:** the one-page CV is a normal page (`/cv`) built from `content.ts`, printed to `/cv.pdf` by Playwright at the end of every build. The build fails if it doesn't fit on one A4 page. Single column, real text, no images, so applicant-tracking systems can read it (checked with `pdftotext`).
+- **Went wrong:** the first PDF ran to two pages, and grouping roles by list position put City of Fremantle under mining. **Fix:** grouped roles by title, and gave each venture a one-line CV version written from the same facts.
+- **Decision:** the link-preview image (`/og.png`) is a screenshot of the real 3D core, rendered with software WebGL at build time. It falls back to the static core if WebGL isn't available.
+- **Decision:** the page stays `noindex` by default and only becomes indexable when built with `PUBLIC_INDEXABLE=true`, so nothing with open TODOs reaches search engines by accident.
+- **Decision:** a privacy check runs before every build and fails it on phone numbers, street addresses, the home postcode, real mine site names, personal emails or anything shaped like a real hole ID. Tested by planting one of each.
+- **Lighthouse, mobile, first run:** 78 performance. Long tasks came from the 3D core: seven copies of the texture uploaded, 52,000 separate canvas draws for the grain, and a frame every 16 ms. **Fix:** one shared texture (smaller on phones), grain painted in one pass over the pixels, fewer polygons, 30 fps cap, and the 3D only starts after load when the browser is idle. Fonts trimmed to the Latin subset, body font preloaded, CSS inlined.
+- **Lighthouse after the fixes:** mobile 97 / 100 / 100 / 100, desktop 100 / 100 / 100 / 100 (performance, accessibility, best practices, SEO), measured on an indexable build.
+- **Blocked:** deploy. The build environment's saved Cloudflare key expired and its proxy overrides any other token. `wrangler deploy --dry-run` succeeds; the README has the three commands to publish from any computer.
